@@ -16,7 +16,6 @@
 		5D082CF0280A13820050814A /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CEF280A13820050814A /* PlayerView.swift */; };
 		5D082CF2280A16E70050814A /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CF1280A16E70050814A /* Game.swift */; };
 		5D082CF7280A17490050814A /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CF6280A17490050814A /* Player.swift */; };
-		5D082CF9280A27AA0050814A /* ExampleGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CF8280A27AA0050814A /* ExampleGame.swift */; };
 		5D082CFB280A2AF10050814A /* BetControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CFA280A2AF10050814A /* BetControls.swift */; };
 		5D082CFE280A31890050814A /* FoldButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CFD280A31890050814A /* FoldButton.swift */; };
 		5D455C4C2802D1FF0070D8EF /* PokerSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D455C4B2802D1FF0070D8EF /* PokerSwiftUIApp.swift */; };
@@ -41,7 +40,6 @@
 		5D082CEF280A13820050814A /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		5D082CF1280A16E70050814A /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		5D082CF6280A17490050814A /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		5D082CF8280A27AA0050814A /* ExampleGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleGame.swift; sourceTree = "<group>"; };
 		5D082CFA280A2AF10050814A /* BetControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetControls.swift; sourceTree = "<group>"; };
 		5D082CFD280A31890050814A /* FoldButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldButton.swift; sourceTree = "<group>"; };
 		5D455C482802D1FF0070D8EF /* PokerSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokerSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,7 +81,6 @@
 				5D082CF5280A171D0050814A /* Cards */,
 				5D082CF1280A16E70050814A /* Game.swift */,
 				5D082CF6280A17490050814A /* Player.swift */,
-				5D082CF8280A27AA0050814A /* ExampleGame.swift */,
 				5DB5D06A280CF29C00F7F0F7 /* GameViewModel.swift */,
 			);
 			path = Model;
@@ -245,7 +242,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D082CF9280A27AA0050814A /* ExampleGame.swift in Sources */,
 				5D082CE72809F24C0050814A /* Deck.swift in Sources */,
 				5D455C4E2802D1FF0070D8EF /* ContentView.swift in Sources */,
 				5D082CDF28090B9B0050814A /* YourCardsView.swift in Sources */,
