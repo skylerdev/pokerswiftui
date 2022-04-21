@@ -28,7 +28,8 @@ class GameViewModel: ObservableObject {
         ref.child(dbPath)
     }
     
-    @Published var game = Game()
+    @Published var game = Game(exists: false)
+    @Published var players = [Player]()
 
     init(id: String){
         gameId = id
@@ -39,8 +40,19 @@ class GameViewModel: ObservableObject {
     }
     
     func startListening() {
+        print("Starting to listen for changes in the model")
         db.observe(.value) { snap in
-            print(snap)
+            
+            let playerRef = snap.childSnapshot(forPath: "players")
+            guard let children = playerRef.children.allObjects as? [DataSnapshot] else {
+                return
+            }
+            self.players = children.compactMap({ snap in
+                return try? snap.data(as: Player.self)
+            })
+            
+            self.game = try! snap.data(as: Game.self)
+
         }
     }
 

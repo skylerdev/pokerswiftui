@@ -47,25 +47,26 @@ struct HomeView: View {
                 HStack {
                     NavigationLink(isActive: $gameViewModel.hosting) {
                         TableHost()
-                    } label: {
-                        Button {
-                            hostPressed()
-                        } label: {
-                            Text("Host")
-                                .foregroundColor(.accentColor)
-                        }
-                        .padding(nameValid ? 30 : 10)
-                        .background(nameValid ? .green : .red )
-                        .opacity(nameValid ? 1 : 0.15)
-                        .cornerRadius(10)
-                        .animation(.spring(), value: nameValid)
-                        .disabled(!nameValid)
-                    }
+                    } label: { EmptyView() }
                     
+                    Button {
+                        hostPressed()
+                    } label: {
+                        Text("Host")
+                            .foregroundColor(.accentColor)
+                    }
+                    .padding(nameValid ? 30 : 10)
+                    .background(nameValid ? .green : .red )
+                    .opacity(nameValid ? 1 : 0.15)
+                    .cornerRadius(10)
+                    .animation(.spring(), value: nameValid)
+                    .disabled(!nameValid)
                     
                     NavigationLink(isActive: $gameViewModel.joining) {
                         TableHost()
                     } label: {
+                        EmptyView()
+                    }
                         Button {
                             joinPressed()
                         } label: {
@@ -87,7 +88,7 @@ struct HomeView: View {
                 
                 Text(gameViewModel.exists ? "" : invalidFeedback)
                     .foregroundColor(gameViewModel.exists ? .green : .red)
-                    .animation(.spring().delay(1), value: gameViewModel.exists)
+                    .animation(.spring().delay(0.2), value: gameViewModel.exists)
                     .frame(width: 200)
                     
                 Spacer()
@@ -114,6 +115,7 @@ struct HomeView: View {
         if(gameViewModel.exists){
             gameViewModel.joining = true
             print("tried to join")
+            gameViewModel.startListening()
         }
     }
     

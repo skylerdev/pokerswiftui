@@ -6,9 +6,7 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct Game: Codable {
-    var started: Bool = false
-    var players = [Player]()
+    var exists: Bool
 }

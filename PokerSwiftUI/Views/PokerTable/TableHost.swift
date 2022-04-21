@@ -12,9 +12,6 @@ struct TableHost: View {
     @EnvironmentObject var gameViewModel: GameViewModel
     @State var curBet = true
     
-    init(){
-        print("tablehost init")
-    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,7 +23,7 @@ struct TableHost: View {
                     .foregroundColor(.green)
                 
                 VStack(alignment: .leading) {
-                    ForEach(gameViewModel.game.players) { p in
+                    ForEach(gameViewModel.players) { p in
                         PlayerView(player: p)
                     }.padding()
                 }
