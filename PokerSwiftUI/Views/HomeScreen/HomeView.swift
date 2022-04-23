@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @EnvironmentObject var gameViewModel: GameViewModel
+    @EnvironmentObject var gameViewModel: TableModel
     @State private var code: String = ""
     @State private var name: String = ""
 
@@ -83,8 +83,10 @@ struct HomeView: View {
                     //TODO: Use an internal codeValid state in combination with .exists and nameValid?
                     //That way we can wait for .exists and even maybe add a loading indicator
                     
-                }.padding()
-                
+                //questions:
+             
+                //how can I set the validators to fire every time a char changes?
+                //or just when the user exits input (eg tap screen?
                 
                 Text(gameViewModel.exists ? "" : invalidFeedback)
                     .foregroundColor(gameViewModel.exists ? .green : .red)
@@ -105,7 +107,7 @@ struct HomeView: View {
             return false
         }
         //alphanumeric check here please
-        
+        gameViewModel.myName = name
         
         return true
     }
@@ -123,6 +125,8 @@ struct HomeView: View {
         print("shit")
         print("tried to host")
         //create game from scratch
+        gameViewModel.hostGame()
+    
         
         gameViewModel.hosting = true
     }
@@ -151,6 +155,6 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
-            .environmentObject(GameViewModel())
+            .environmentObject(TableModel())
     }
 }

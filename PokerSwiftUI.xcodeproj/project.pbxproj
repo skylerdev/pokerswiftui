@@ -22,9 +22,10 @@
 		5D455C4E2802D1FF0070D8EF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D455C4D2802D1FF0070D8EF /* ContentView.swift */; };
 		5D455C502802D1FF0070D8EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D455C4F2802D1FF0070D8EF /* Assets.xcassets */; };
 		5D455C532802D1FF0070D8EF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D455C522802D1FF0070D8EF /* Preview Assets.xcassets */; };
+		5D5DD712281367530003C9A4 /* StartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5DD711281367530003C9A4 /* StartButton.swift */; };
 		5DB5D065280CE46000F7F0F7 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D064280CE46000F7F0F7 /* FirebaseDatabase */; };
 		5DB5D067280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D066280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta */; };
-		5DB5D06B280CF29C00F7F0F7 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D06A280CF29C00F7F0F7 /* GameViewModel.swift */; };
+		5DB5D06B280CF29C00F7F0F7 /* TableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */; };
 		5DB5D06F280D190F00F7F0F7 /* HostButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D06E280D190F00F7F0F7 /* HostButton.swift */; };
 		5DB5D071280D191500F7F0F7 /* JoinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D070280D191500F7F0F7 /* JoinButton.swift */; };
 		5DB5D075280E1C8D00F7F0F7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DB5D074280E1C8D00F7F0F7 /* GoogleService-Info.plist */; };
@@ -47,7 +48,8 @@
 		5D455C4D2802D1FF0070D8EF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5D455C4F2802D1FF0070D8EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D455C522802D1FF0070D8EF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		5DB5D06A280CF29C00F7F0F7 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		5D5DD711281367530003C9A4 /* StartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButton.swift; sourceTree = "<group>"; };
+		5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableModel.swift; sourceTree = "<group>"; };
 		5DB5D06E280D190F00F7F0F7 /* HostButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostButton.swift; sourceTree = "<group>"; };
 		5DB5D070280D191500F7F0F7 /* JoinButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinButton.swift; sourceTree = "<group>"; };
 		5DB5D074280E1C8D00F7F0F7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -81,7 +83,7 @@
 				5D082CF5280A171D0050814A /* Cards */,
 				5D082CF1280A16E70050814A /* Game.swift */,
 				5D082CF6280A17490050814A /* Player.swift */,
-				5DB5D06A280CF29C00F7F0F7 /* GameViewModel.swift */,
+				5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -94,6 +96,7 @@
 				5D082CEF280A13820050814A /* PlayerView.swift */,
 				5D082CFA280A2AF10050814A /* BetControls.swift */,
 				5D082CFD280A31890050814A /* FoldButton.swift */,
+				5D5DD711281367530003C9A4 /* StartButton.swift */,
 			);
 			path = PokerTable;
 			sourceTree = "<group>";
@@ -245,9 +248,10 @@
 				5D082CE72809F24C0050814A /* Deck.swift in Sources */,
 				5D455C4E2802D1FF0070D8EF /* ContentView.swift in Sources */,
 				5D082CDF28090B9B0050814A /* YourCardsView.swift in Sources */,
-				5DB5D06B280CF29C00F7F0F7 /* GameViewModel.swift in Sources */,
+				5DB5D06B280CF29C00F7F0F7 /* TableModel.swift in Sources */,
 				5DB5D06F280D190F00F7F0F7 /* HostButton.swift in Sources */,
 				5D082CF0280A13820050814A /* PlayerView.swift in Sources */,
+				5D5DD712281367530003C9A4 /* StartButton.swift in Sources */,
 				5D082CFB280A2AF10050814A /* BetControls.swift in Sources */,
 				5DB5D071280D191500F7F0F7 /* JoinButton.swift in Sources */,
 				5D082CE3280917DE0050814A /* Card.swift in Sources */,

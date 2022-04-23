@@ -17,7 +17,7 @@ struct PokerSwiftUIApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(GameViewModel())
+            ContentView().environmentObject(TableModel())
         }
     }
 }

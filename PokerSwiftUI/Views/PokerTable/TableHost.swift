@@ -9,13 +9,16 @@ import SwiftUI
 
 struct TableHost: View {
     
-    @EnvironmentObject var gameViewModel: GameViewModel
+    @EnvironmentObject var gameViewModel: TableModel
     @State var curBet = true
     
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("hello there, \(gameViewModel.myName)")
+            HStack {
+                Text("hello there, \(gameViewModel.myName)")
+                
+            }
             ZStack {
                 Circle()
                     .scale(y: 3)
@@ -40,7 +43,7 @@ struct TableHost: View {
 struct TableHost_Previews: PreviewProvider {
     static var previews: some View {
         TableHost()
-            .environmentObject(GameViewModel(id: "ageb"))
+            .environmentObject(TableModel(id: "ageb"))
             
     }
 }
