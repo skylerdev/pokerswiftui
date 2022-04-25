@@ -19,82 +19,58 @@ struct HomeView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(alignment: .center) {
                 //The Title
                 Text("PokerChips")
                     .bold()
                     .font(.largeTitle)
                 
                 //The Name Field
-                TextField("Your Silly Little Name", text: $name)
-                    .onSubmit {
+                TextField("Your Silly Little Name", text: $name, onEditingChanged: { isEditing in
+                    if !isEditing {
                         nameValid = nameValidator()
-                    }
+                    }})
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .border(.secondary)
                 
                 //The Room Code Field
-                TextField("Room Code", text: $code)
-                    .onSubmit {
-                        codeValidator()
-                    }
+                TextField("Room Code", text: $code, onEditingChanged: { isEditing in
+                    if !isEditing {
+                        codeValidator(input: code)
+                    }})
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .border(.secondary)
                     
+                NavigationLink(isActive: $gameViewModel.hosting) {
+                    TableHost()
+                } label: { EmptyView() }
                 
-                HStack {
-                    NavigationLink(isActive: $gameViewModel.hosting) {
-                        TableHost()
-                    } label: { EmptyView() }
+                NavigationLink(isActive: $gameViewModel.joining) {
+                    TableHost()
+                } label: {
+                    EmptyView()
+                }
+                
+                HStack(alignment: .center, spacing: 10) {
+                   
+                    HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
+                    HostButton(pressed: joinPressed, valid: nameValid && gameViewModel.exists, text: "Join")
+                }
                     
-                    Button {
-                        hostPressed()
-                    } label: {
-                        Text("Host")
-                            .foregroundColor(.accentColor)
-                    }
-                    .padding(nameValid ? 30 : 10)
-                    .background(nameValid ? .green : .red )
-                    .opacity(nameValid ? 1 : 0.15)
-                    .cornerRadius(10)
-                    .animation(.spring(), value: nameValid)
-                    .disabled(!nameValid)
-                    
-                    NavigationLink(isActive: $gameViewModel.joining) {
-                        TableHost()
-                    } label: {
-                        EmptyView()
-                    }
-                        Button {
-                            joinPressed()
-                        } label: {
-                            Text("Join")
-                                .foregroundColor(.accentColor)
-                        }
-                        .padding(nameValid && gameViewModel.exists ? 30 : 10)
-                        .background(nameValid && gameViewModel.exists ? .green : .red )
-                        .opacity(nameValid && gameViewModel.exists ? 1 : 0.15)
-                        .cornerRadius(10)
-                        .animation(.spring(), value: nameValid && gameViewModel.exists)
-                        .disabled(!(nameValid && gameViewModel.exists))
-                    }
                     //TODO: Use an internal codeValid state in combination with .exists and nameValid?
                     //That way we can wait for .exists and even maybe add a loading indicator
-                    
-                //questions:
-             
-                //how can I set the validators to fire every time a char changes?
-                //or just when the user exits input (eg tap screen?
                 
                 Text(gameViewModel.exists ? "" : invalidFeedback)
                     .foregroundColor(gameViewModel.exists ? .green : .red)
                     .animation(.spring().delay(0.2), value: gameViewModel.exists)
                     .frame(width: 200)
                     
-                Spacer()
+              
                 
+                
+                Spacer()
             }.padding()
         }
     }
@@ -131,14 +107,13 @@ struct HomeView: View {
         gameViewModel.hosting = true
     }
     
-    func codeValidator() {
-        gameViewModel.gameId = code.lowercased()
+    func codeValidator(input: String) {
+        gameViewModel.gameId = input.lowercased()
+        gameViewModel.exists = false
         if(code.isEmpty){
             invalidFeedback = "Empty"
-            gameViewModel.exists = false
         }else if(code.count != 4){
             invalidFeedback = "Not 4 chars"
-            gameViewModel.exists = false
         }else{
             
             //code is valid, actually check db now

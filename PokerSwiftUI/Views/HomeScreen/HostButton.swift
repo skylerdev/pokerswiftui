@@ -8,21 +8,30 @@
 import SwiftUI
 
 struct HostButton: View {
-    var color: Color
+    var pressed: () -> Void
+    var valid: Bool
     var text: String
     
     var body: some View {
-        Text(text)
-            .padding(10)
-            .background(color)
-            .foregroundColor(.accentColor)
-            .cornerRadius(10)
-         //   .opacity(<#T##opacity: Double##Double#>)
+        Button {
+            pressed()
+        } label: {
+            Text(text)
+                .foregroundColor(.accentColor)
+        }
+        .padding(valid ? 30 : 10)
+        .background(valid ? .green : .red )
+        .opacity(valid ? 1 : 0.15)
+        .cornerRadius(10)
+        .animation(.spring(), value: valid)
+        .disabled(!valid)
     }
 }
 
 struct HostButton_Previews: PreviewProvider {
     static var previews: some View {
-        HostButton(color: .red, text: "Fuck")
+        HostButton(pressed: {
+            print("pressed")
+        }, valid: true, text: "Hi")
     }
 }
