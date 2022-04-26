@@ -91,9 +91,9 @@ struct HomeView: View {
     func joinPressed() {
         print("fuck")
         if(gameViewModel.exists){
-            gameViewModel.joining = true
             print("tried to join")
-            gameViewModel.startListening()
+            gameViewModel.joinGame()
+            gameViewModel.joining = true
         }
     }
     
