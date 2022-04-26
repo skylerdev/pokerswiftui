@@ -8,5 +8,29 @@
 import Foundation
 
 struct Game: Codable {
-    var exists: Bool
+    //There are 4 betting phases each hand
+    var phase: GamePhase = .preflop
+    
+    //How many hands have taken place
+    var handNumber: Int = 0
+    
+    //Whether the game has started or is on pause
+    var beingPlayed: Bool = false
+    
+    //MARK: - Game Logic
+    
+    //The current pot to win the game
+    //Each player should have their own pot var
+    var pot: Int = 0
+    
+    //Whether someones bet this hand or not
+    var betExists: Bool = false
+    
+    
+    
+}
+
+
+enum GamePhase: Int, Codable, CaseIterable {
+    case preflop, flop, turn, river
 }
