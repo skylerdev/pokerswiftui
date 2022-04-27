@@ -41,6 +41,9 @@ class TableModel: ObservableObject {
     private var gamePath: String {
         "tables/\(gameId)/game"
     }
+    private var mePath: String {
+        "tables/\(gameId)/players/\(myPlayerId)"
+    }
     
     private var db: DatabaseReference {
         ref.child(rootPath)
@@ -50,6 +53,21 @@ class TableModel: ObservableObject {
             p.id == myPlayerId
         }
     }
+    var currentlyPlaying: Player? {
+        return players.first { p in
+            p.isPlaying == true
+        }
+    }
+    var currentlyPlayingIndex: Int {
+        for i in 0..<players.count {
+            if(players[i].isPlaying){
+                return i
+            }
+        }
+        return -1
+    }
+    
+    
 
     //MARK: - INIT
     
@@ -57,26 +75,42 @@ class TableModel: ObservableObject {
         gameId = id
     }
     
-    init(){
-        //gameId = something random
+    init(demoMode: Bool){
+        if(demoMode){
+            players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, isPlaying: true, hasBet: true, folded: false))
+            players.append(Player(id: "meplayer", name: "Skyler", chips: 1000, totalRoundBet: 0, currentBet: 0, bigBlind: false, isPlaying: false, hasBet: false, folded: false))
+            players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, isPlaying: false, hasBet: false, folded: true))
+            players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, isPlaying: false, hasBet: true, folded: false))
+            myPlayerId = "meplayer"
+            
+            game.beingPlayed = true
+            game.pot = 1200
+            game.betExists = true
+            game.phase = .preflop
+            
+        }
+    }
+    
+    init() {
+        
     }
     
     
     func startListening() {
         print("Starting to listen for changes in the model")
         db.observe(.value) { snap in
+            print("CHANGE IN MODEL //////////")
             print(snap)
             let playerRef = snap.childSnapshot(forPath: "players")
-            print(playerRef)
             guard let children = playerRef.children.allObjects as? [DataSnapshot] else {
                 print("couldnt get all child objects")
                 return
             }
-            print(children)
             self.players = children.compactMap({ snap in
                 return try! snap.data(as: Player.self)
             })
             print(self.players)
+            print("ENDCHANGE ////////////")
             
             self.game = try! snap.childSnapshot(forPath: "game").data(as: Game.self)
         }
@@ -112,13 +146,42 @@ class TableModel: ObservableObject {
     //MARK: - GAME FLOW
     
     func startGame() {
+        
+        guard players.count > 1 else {
+            print("started with less than 2 player somehow??")
+            return
+        }
         ref.child("\(gamePath)/started").setValue(true)
         
-        let p = getRandomPlayer()
-        ref.child(pidToPath(id: p.id)).updateChildValues(["bigBlind" : true])
+        let randomIndex = getRandomIndex()
         
+        let firstId = players[randomIndex].id
+        //make one guy the big blind
+        ref.child(pidToPath(id: firstId)).updateChildValues(["bigBlind" : true,
+                                                              "hasBet" : true,
+                                                             //TODO: fix this
+                                                             ])
+        
+        
+        let secondId = players[resolveIndex(index: randomIndex+1)].id
+        //make the guy after him the little blind
+        ref.child(pidToPath(id: secondId)).updateChildValues(["littleBlind" : true])
+        
+        if(players.count == 2){
+            ref.child(pidToPath(id: secondId)).updateChildValues(["isPlaying" : true])
+        }else{
+            let thirdId = players[resolveIndex(index: randomIndex+2)].id
+            ref.child(pidToPath(id: thirdId)).updateChildValues(["isPlaying" : true])
+        }
+        
+        
+        
+      
     }
     
+    func bet(amount: Int) {
+        ref.child(mePath).updateChildValues(["betting" : false, "currentBet" : amount])
+    }
     
     
     
@@ -127,6 +190,18 @@ class TableModel: ObservableObject {
     
     func getRandomPlayer() -> Player {
         return players.randomElement()!
+    }
+    
+    func getRandomIndex() -> Int {
+        Int.random(in: 0..<players.count)
+    }
+    
+    func resolveIndex(index: Int) -> Int {
+        if(index < players.count){
+            return index
+        }
+        
+        return index - players.count
     }
     
     func pidToPath(id: String) -> String {
