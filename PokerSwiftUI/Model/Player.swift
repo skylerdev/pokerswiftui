@@ -15,7 +15,7 @@ struct Player: Codable, Identifiable {
     var totalRoundBet: Int = 0
     var currentBet: Int = 0
     var bigBlind = false
-    var isPlaying = false
+    var acting = false
     var hasBet = false
     var folded = false
     
