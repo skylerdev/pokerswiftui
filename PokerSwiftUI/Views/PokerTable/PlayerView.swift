@@ -66,8 +66,8 @@ struct PlayerView: View {
             }
         }
         .foregroundColor(player.folded ? .gray : .black)
-        .shadow(color: player.isPlaying ? .red : .clear, radius: 5, x: 0, y: 0)
-        .animation(.easeOut, value: player.isPlaying)
+        .shadow(color: player.acting ? .red : .clear, radius: 5, x: 0, y: 0)
+        .animation(.easeOut, value: player.acting)
     
         
     }
@@ -77,7 +77,7 @@ struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
         
         PlayerView(player:
-                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 999999, bigBlind: false, isPlaying: true, hasBet: false, folded: false)
+                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 999999, bigBlind: false, acting: true, hasBet: false, folded: false)
         
         
             )

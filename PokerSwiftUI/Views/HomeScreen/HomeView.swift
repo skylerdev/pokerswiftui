@@ -66,7 +66,7 @@ struct HomeView: View {
                     .foregroundColor(gameViewModel.exists ? .green : .red)
                     .animation(.spring().delay(0.2), value: gameViewModel.exists)
                     .frame(width: 200)
-                    
+                    .animation(.spring().speed(10), value: invalidFeedback)
               
                 
                 
@@ -89,22 +89,25 @@ struct HomeView: View {
     }
     
     func joinPressed() {
-        print("fuck")
+        print("tried to join")
         if(gameViewModel.exists){
-            print("tried to join")
+            invalidFeedback = "Trying To Join..."
+            gameViewModel.dataInitCallback = {
+                gameViewModel.joining = true
+            }
             gameViewModel.joinGame()
-            gameViewModel.joining = true
+            
         }
     }
     
     func hostPressed() {
-        print("shit")
         print("tried to host")
-        //create game from scratch
+        invalidFeedback = "Trying To Host..."
+        gameViewModel.dataInitCallback = {
+            gameViewModel.hosting = true
+        }
         gameViewModel.hostGame()
-    
-        
-        gameViewModel.hosting = true
+       
     }
     
     func codeValidator(input: String) {

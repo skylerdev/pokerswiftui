@@ -18,6 +18,8 @@ class TableModel: ObservableObject {
     var myName: String = ""
     var myPlayerId: String = ""
     
+    var dataInitCallback: () -> Void = {}
+    
     static let validChars = "qwertyuiopasdfghjklzxcvbnm"
     
     
@@ -55,12 +57,12 @@ class TableModel: ObservableObject {
     }
     var currentlyPlaying: Player? {
         return players.first { p in
-            p.isPlaying == true
+            p.acting == true
         }
     }
     var currentlyPlayingIndex: Int {
         for i in 0..<players.count {
-            if(players[i].isPlaying){
+            if(players[i].acting){
                 return i
             }
         }
@@ -68,19 +70,21 @@ class TableModel: ObservableObject {
     }
     
     
+    
 
     //MARK: - INIT
     
     init(id: String){
         gameId = id
+        
     }
     
     init(demoMode: Bool){
         if(demoMode){
-            players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, isPlaying: true, hasBet: true, folded: false))
-            players.append(Player(id: "meplayer", name: "Skyler", chips: 1000, totalRoundBet: 0, currentBet: 0, bigBlind: false, isPlaying: false, hasBet: false, folded: false))
-            players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, isPlaying: false, hasBet: false, folded: true))
-            players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, isPlaying: false, hasBet: true, folded: false))
+            players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, acting: true, hasBet: true, folded: false))
+            players.append(Player(id: "meplayer", name: "Skyler", chips: 1000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasBet: false, folded: false))
+            players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasBet: false, folded: true))
+            players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, acting: false, hasBet: true, folded: false))
             myPlayerId = "meplayer"
             
             game.beingPlayed = true
@@ -113,6 +117,8 @@ class TableModel: ObservableObject {
             print("ENDCHANGE ////////////")
             
             self.game = try! snap.childSnapshot(forPath: "game").data(as: Game.self)
+            
+            self.dataInitCallback()
         }
     }
 
@@ -168,10 +174,10 @@ class TableModel: ObservableObject {
         ref.child(pidToPath(id: secondId)).updateChildValues(["littleBlind" : true])
         
         if(players.count == 2){
-            ref.child(pidToPath(id: secondId)).updateChildValues(["isPlaying" : true])
+            ref.child(pidToPath(id: secondId)).updateChildValues(["acting" : true])
         }else{
             let thirdId = players[resolveIndex(index: randomIndex+2)].id
-            ref.child(pidToPath(id: thirdId)).updateChildValues(["isPlaying" : true])
+            ref.child(pidToPath(id: thirdId)).updateChildValues(["acting" : true])
         }
         
         
@@ -180,7 +186,23 @@ class TableModel: ObservableObject {
     }
     
     func bet(amount: Int) {
-        ref.child(mePath).updateChildValues(["betting" : false, "currentBet" : amount])
+        let chipsAfterBet = me!.chips - amount
+        
+        ref.child(mePath).updateChildValues(["acting" : false, "currentBet" : amount, "chips" : chipsAfterBet])
+        nextPlayer()
+    }
+    
+    func fold() {
+        ref.child(mePath).updateChildValues(["folded" : true, "acting" : false])
+        nextPlayer()
+    }
+    
+    func nextPlayer() {
+       //get next player somehow
+        let index = resolveIndex(index: currentlyPlayingIndex)
+        let id = players[index].id
+        ref.child(pidToPath(id: id)).updateChildValues(["acting" : true])
+        
     }
     
     
