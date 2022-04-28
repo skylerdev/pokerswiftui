@@ -9,41 +9,62 @@ import SwiftUI
 
 struct TableHost: View {
     
-    @EnvironmentObject var gameViewModel: TableModel
+    @EnvironmentObject var tableModel: TableModel
     @State var curBet = true
     
     
-    var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("hello there, \(gameViewModel.myName)")
-                
-            }
+    var body: some View {       
             ZStack {
+                //BACKGROUND CIRCLE
                 Circle()
                     .scale(y: 3)
                     .offset(x: 180, y: 9)
                     .foregroundColor(.green)
                 
-                VStack(alignment: .leading) {
-                    ForEach(gameViewModel.players) { p in
-                        PlayerView(player: p)
-                    }.padding()
+                //EVERYTHING ELSE
+                VStack {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            
+                            HStack(alignment: .top) {
+                                if(tableModel.hosting && !tableModel.game.beingPlayed && tableModel.players.count >= 2 ){
+                                    StartButton {
+                                        tableModel.startGame()
+                                    }
+                                }
+                            }
+                            ForEach(tableModel.players) { p in
+                                PlayerView(player: p)
+                            }.padding()
+                        }
+                        switch tableModel.game.phase {
+                        case .preflop:
+                            Text("Preflop")
+                        case .flop:
+                            Text("Flop")
+                        case .river:
+                            Text("River")
+                        case.turn:
+                            Text("Turn")
+                        }
+                    }
+                    Spacer()
+                    HStack(alignment: .center) {
+                        //YourCardsView(card1: card1, card2: card2)
+                        BetControls(minBet: 20, curBet: 20, controlsEnabled: tableModel.me?.acting ?? false)
+                    }
                 }
-            }
-            HStack {
-                //YourCardsView(card1: card1, card2: card2)
-                BetControls(minBet: 0, maxBet: 100, curBet: 3)
-            }
-        } //VSTACK
-        
+                
+                
+            } //ZSTACK: MAIN SCREEN
     }
 }
 
 struct TableHost_Previews: PreviewProvider {
     static var previews: some View {
         TableHost()
-            .environmentObject(TableModel(id: "ageb"))
+            .environmentObject(TableModel(demoMode: true))
             
     }
 }
+
