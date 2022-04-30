@@ -9,6 +9,7 @@ import Foundation
 import FirebaseDatabase
 import FirebaseDatabaseSwift
 import Combine
+import SwiftUI
 
 class TableModel: ObservableObject {
     
@@ -17,6 +18,7 @@ class TableModel: ObservableObject {
     var gameId: String = ""
     var myName: String = ""
     var myPlayerId: String = ""
+    var generatedId: String = TableModel.randomString(length: 4)
     
     var dataInitCallback: () -> Void = {}
     
@@ -76,13 +78,12 @@ class TableModel: ObservableObject {
     
     init(id: String){
         gameId = id
-        
     }
     
     init(demoMode: Bool){
         if(demoMode){
-            players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, acting: true, hasBet: true, folded: false))
-            players.append(Player(id: "meplayer", name: "Skyler", chips: 1000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasBet: false, folded: false))
+            players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, acting: false, hasBet: true, folded: false))
+            players.append(Player(id: "meplayer", name: "Skyler", chips: 1000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: true, hasBet: false, folded: false))
             players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasBet: false, folded: true))
             players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, acting: false, hasBet: true, folded: false))
             myPlayerId = "meplayer"
@@ -91,12 +92,13 @@ class TableModel: ObservableObject {
             game.pot = 1200
             game.betExists = true
             game.phase = .preflop
-            
+            self.gameId = "zzzz"
+
         }
     }
     
     init() {
-        
+
     }
     
     
@@ -130,78 +132,181 @@ class TableModel: ObservableObject {
     }
     
     func hostGame() {
-        let autoId = TableModel.randomString(length: 4)
-        print("generated \(autoId)")
         
-        gameId = autoId
+        gameId = generatedId
         ref.child("\(rootPath)/exists").setValue(true)
         
         do {
-            try ref.child(gamePath).setValue(from: game)
+            try ref.child(gamePath).setValue(from: game) { err in
+                if let e = err {
+                    print(e.localizedDescription)
+                    return
+                }else{
+                    print("Added Game \(self.gameId) Successfully, adding player + attaching listener...")
+                    self.addPlayer()
+                    self.startListening()
+                }
+                
+            }
         } catch let error {
             print("hostGame error")
             print(error.localizedDescription)
             return
         }
-        addPlayer()
-        startListening()
-    
+
         
     }
     
     //MARK: - GAME FLOW
     
     func startGame() {
+        print("Starting game...")
         
         guard players.count > 1 else {
             print("started with less than 2 player somehow??")
             return
         }
-        ref.child("\(gamePath)/started").setValue(true)
+        ref.child(gamePath).updateChildValues(["beingPlayed" : true]) { error, ref in
+            if((error) != nil){
+                print(error)
+                return
+            }
+            print(ref)
+        }
         
         let randomIndex = getRandomIndex()
         
-        let firstId = players[randomIndex].id
+        let p1 = players[randomIndex]
         //make one guy the big blind
-        ref.child(pidToPath(id: firstId)).updateChildValues(["bigBlind" : true,
-                                                              "hasBet" : true,
-                                                             //TODO: fix this
-                                                             ])
+        bigBlind(p: p1)
         
-        
-        let secondId = players[resolveIndex(index: randomIndex+1)].id
+        let p2 = players[resolveIndex(index: randomIndex+1)]
         //make the guy after him the little blind
-        ref.child(pidToPath(id: secondId)).updateChildValues(["littleBlind" : true])
+        littleBlind(p: p2)
         
         if(players.count == 2){
-            ref.child(pidToPath(id: secondId)).updateChildValues(["acting" : true])
+            ref.child(pidToPath(id: p2.id)).updateChildValues(["acting" : true])
         }else{
-            let thirdId = players[resolveIndex(index: randomIndex+2)].id
-            ref.child(pidToPath(id: thirdId)).updateChildValues(["acting" : true])
+            let p3 = players[resolveIndex(index: randomIndex+2)].id
+            ref.child(pidToPath(id: p3)).updateChildValues(["acting" : true])
         }
-        
-        
-        
       
     }
+    
+    
     
     func bet(amount: Int) {
         let chipsAfterBet = me!.chips - amount
         
-        ref.child(mePath).updateChildValues(["acting" : false, "currentBet" : amount, "chips" : chipsAfterBet])
+        ref.child(mePath).updateChildValues(["currentBet" : me!.currentBet + amount,
+                                             "chips" : chipsAfterBet,
+                                             "hasBet" : true ])
+        ref.child(gamePath).updateChildValues(["betExists" : true])
+        nextPlayer()
+    }
+    
+    func check() {
+        ref.child(mePath).updateChildValues(["hasBet" : true])
         nextPlayer()
     }
     
     func fold() {
-        ref.child(mePath).updateChildValues(["folded" : true, "acting" : false])
+        ref.child(mePath).updateChildValues(["folded" : true])
         nextPlayer()
     }
     
     func nextPlayer() {
        //get next player somehow
-        let index = resolveIndex(index: currentlyPlayingIndex)
-        let id = players[index].id
+        
+        ref.child(mePath).updateChildValues(["acting" : false])
+        let nextIndex = resolveIndex(index: currentlyPlayingIndex+1)
+        print("\(currentlyPlayingIndex) next: \(nextIndex)")
+        let id = players[nextIndex].id
+        print("\(id), \(players[nextIndex].name)")
         ref.child(pidToPath(id: id)).updateChildValues(["acting" : true])
+        
+    }
+    
+    func bigBlind(p: Player){
+        let bbAmt = game.minBet * 2
+        let chipsAfter = p.chips - bbAmt
+        if(chipsAfter < 0){
+            //TODO: All In Blind
+            
+        }else{
+        ref.child(pidToPath(id: p.id)).updateChildValues(["bigBlind" : true,
+                                                              "hasBet" : true,
+                                                           "currentBet" : bbAmt,
+                                                           "chips" : chipsAfter
+                                                             ])
+        }
+    }
+    
+    func littleBlind(p: Player){
+        let lbAmt = game.minBet
+        let chipsAfter = p.chips - lbAmt
+        if(chipsAfter < 0){
+            //TODO: All in blind
+        }else{
+            ref.child(pidToPath(id: p.id)).updateChildValues(["littleBlind" : true,
+                                                                  "hasBet" : true,
+                                                               "currentBet" : lbAmt,
+                                                               "chips" : chipsAfter
+                                                                 ])
+        }
+    }
+    
+    
+    //TODO: Unfinished
+    func nextPhase(){
+        for i in 0..<players.count {
+            let id = players[i].id
+            ref.child(pidToPath(id: id)).updateChildValues([
+                "acting" : false,
+                "hasBet" : false,
+                "currentBet" : 0
+            ])
+        }
+        //find blind, get next unfolded player
+        let bIndex = players.firstIndex { p in
+            p.bigBlind == true
+        }
+        guard let blindIndex = bIndex else {
+            return
+        }
+
+        print("blind index = \(blindIndex)")
+        var unfoldedIndex = blindIndex
+        while(players[unfoldedIndex].folded == true){
+            unfoldedIndex += 1
+            if(unfoldedIndex == players.count) {
+                
+            }
+            if(unfoldedIndex == blindIndex){
+                
+            }
+        }
+        
+        //make them acting = true
+        
+    }
+    
+    
+    
+    //TODO: Unfinished
+    func newRound(){
+        for i in 0..<players.count {
+            let id = players[i].id
+            ref.child(pidToPath(id: id)).updateChildValues([
+                "totalRoundBet" : 0,
+                "currentBet" : 0,
+                "acting" : false,
+                "hasBet" : false,
+                "folded" : false
+            ])
+        }
+        
+        //find blind, increment it
         
     }
     
@@ -271,14 +376,10 @@ class TableModel: ObservableObject {
     
     func gameExists() {
         print("GameExists called at \(rootPath)")
-        ref.child("\(rootPath)/exists").getData(completion:  { error, snapshot in
-          guard error == nil else {
-            print(error!.localizedDescription)
-            return;
-          }
-            print(snapshot)
-            self.exists = snapshot.value as? Bool ?? false
-        });
+        ref.child("\(rootPath)/exists").observeSingleEvent(of: .value) { snap in
+            print(snap)
+            self.exists = snap.value as? Bool ?? false
+        }
     }
     
    
