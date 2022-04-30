@@ -23,16 +23,17 @@ struct TableHost: View {
                 
                 //EVERYTHING ELSE
                 VStack {
+                    if(tableModel.hosting && !tableModel.game.beingPlayed && tableModel.players.count >= 2 ){
+                        StartButton {
+                            print("Pressed start")
+                            tableModel.startGame()
+                        }
+                    }
                     HStack {
                         VStack(alignment: .leading) {
                             
-                            HStack(alignment: .top) {
-                                if(tableModel.hosting && !tableModel.game.beingPlayed && tableModel.players.count >= 2 ){
-                                    StartButton {
-                                        tableModel.startGame()
-                                    }
-                                }
-                            }
+                            Text(tableModel.gameId)
+                            
                             ForEach(tableModel.players) { p in
                                 PlayerView(player: p)
                             }.padding()
@@ -51,7 +52,8 @@ struct TableHost: View {
                     Spacer()
                     HStack(alignment: .center) {
                         //YourCardsView(card1: card1, card2: card2)
-                        BetControls(minBet: 20, curBet: 20, controlsEnabled: tableModel.me?.acting ?? false)
+                        BetControls(minBet: 20, curBet: 20, controlsEnabled: tableModel.me!.acting)
+                            
                     }
                 }
                 
