@@ -18,6 +18,20 @@ struct Player: Codable, Identifiable {
     var acting = false
     var hasBet = false
     var folded = false
+    var littleBlind = false
     
+    mutating func reset() {
+        totalRoundBet = 0
+        currentBet = 0
+        acting = false
+        hasBet = false
+        folded = false
+        bigBlind = false
+    }
     
+    mutating func nextPhase() {
+        currentBet = 0
+        acting = false
+        hasBet = false
+    }
 }
