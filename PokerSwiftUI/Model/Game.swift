@@ -26,6 +26,9 @@ struct Game: Codable {
     //Whether someones bet this hand or not
     var betExists: Bool = false
     
+    //what the min bet is
+    var minBet: Int = 20
+    
     
     
 }
