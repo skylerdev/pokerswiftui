@@ -11,7 +11,7 @@ struct BetControls: View {
     var minBet: Float = 20
     @State var curBet: Float
     @State var percentSelected: Percent = .ten
-    @State var controlsEnabled: Bool
+    var controlsEnabled: Bool
     @State var betText: String = "Bet"
     
     @EnvironmentObject var tableModel: TableModel
@@ -78,13 +78,23 @@ struct BetControls: View {
                 //if bet exists, change these to raise and fold respectively
                 Button("Bet") {
                     print("Just hit the bet button")
+                    tableModel.bet(amount: Int(curBet))
                 }.padding()
-                 
+        
                     
-                    
-                Button("Check") {
-                    print("Just hit the check button")
-                }.padding()
+                   
+                if(tableModel.game.betExists){
+                    Button("Fold") {
+                        print("just hit the fold button")
+                        tableModel.fold()
+                    }
+                } else {
+                    Button("Check") {
+                        print("Just hit the check button")
+                        tableModel.check()
+                    }.padding()
+                }
+                
                 
                 
             }
