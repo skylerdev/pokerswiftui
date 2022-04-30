@@ -50,6 +50,23 @@ struct PlayerView: View {
                                 Circle().foregroundColor(Color(.sRGB, red: 1, green: 1, blue: 1, opacity: player.folded ? 0.60 : 0.00))
                             })
                             Text("\(player.chips)")
+                            Spacer().frame(width: 20, height: 10)
+                            if(player.bigBlind){
+                                Image(systemName: "b.circle.fill")
+                                    .resizable()
+                                    .frame(width: 20, height: 20, alignment: .trailing)
+                            }else if(player.littleBlind){
+                                Image(systemName: "b.circle")
+                                    .resizable()
+                                    .frame(width: 20, height: 20, alignment: .trailing)
+                                    .scaledToFit()
+                            }else{
+                                Image(systemName: "b.circle")
+                                    .resizable()
+                                    .frame(width: 20, height: 20, alignment: .trailing)
+                                    .scaledToFit()
+                                    .hidden()
+                            }
                                                 
                         }
                     
@@ -77,7 +94,7 @@ struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
         
         PlayerView(player:
-                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 999999, bigBlind: false, acting: true, hasBet: false, folded: false)
+                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 999999, bigBlind: true, acting: true, hasBet: false, folded: false)
         
         
             )
