@@ -8,17 +8,32 @@
 import SwiftUI
 
 struct BetControls: View {
-    var minBet: Float = 20
-    @State var curBet: Float
+
     @State var percentSelected: Percent = .ten
     var controlsEnabled: Bool
-    @State var betText: String = "Bet"
+  //  @State var betText: String = "Bet"
     
     @EnvironmentObject var tableModel: TableModel
     
     var chips: Float {
         return Float(tableModel.me!.chips)
     }
+    
+    var minBet: Float {
+        if(tableModel.game.betExists){
+            var bets: [Int] = []
+            for p in tableModel.players {
+                bets.append(p.currentBet)
+            }
+            let call = bets.max() ?? -99999
+            let callDiff = call - tableModel.me!.currentBet
+            return Float(callDiff)
+        }else{
+            return 20
+        }
+    }
+    
+    @State var curBet: Float = 20
     
     enum Percent: String, CaseIterable, Identifiable {
         case ten = "10%", twentyfive = "25%", fifty = "50%", allin = "all"
@@ -57,9 +72,14 @@ struct BetControls: View {
                         }
                         
                     }
+                   
+                    
                 
-                
-                Text("\(Int(curBet))")
+                if(curBet <= minBet){
+                    Text("\(Int(minBet))")
+                }else{
+                    Text("\(Int(curBet))")
+                }
                 //Put a textfield here later
                 
            
@@ -76,19 +96,25 @@ struct BetControls: View {
         
             VStack(){
                 //if bet exists, change these to raise and fold respectively
-                Button("Bet") {
-                    print("Just hit the bet button")
-                    tableModel.bet(amount: Int(curBet))
-                }.padding()
-        
+            
                     
-                   
+                //CALL / RAISE TEXT
                 if(tableModel.game.betExists){
+                    Button(curBet <= minBet ? "Call" : "Raise") {
+                        //get biggest amt currently bet in the table. use it
+                        curBet = curBet <= minBet ? minBet : curBet
+                        tableModel.bet(amount: Int(curBet))
+                    }.padding()
                     Button("Fold") {
                         print("just hit the fold button")
                         tableModel.fold()
                     }
                 } else {
+                    Button("Bet") {
+                        print("Just hit the bet button")
+                        curBet = curBet <= minBet ? minBet : curBet
+                        tableModel.bet(amount: Int(curBet))
+                    }.padding()
                     Button("Check") {
                         print("Just hit the check button")
                         tableModel.check()
@@ -107,7 +133,7 @@ struct BetControls: View {
 
 struct BetControls_Previews: PreviewProvider {
     static var previews: some View {
-        BetControls(minBet: 20, curBet: 20, controlsEnabled: true)
+        BetControls(controlsEnabled: true)
             .environmentObject(TableModel(demoMode: true))
     }
 }
