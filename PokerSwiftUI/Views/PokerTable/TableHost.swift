@@ -10,7 +10,6 @@ import SwiftUI
 struct TableHost: View {
     
     @EnvironmentObject var tableModel: TableModel
-    @State var curBet = true
     
     
     var body: some View {       
@@ -32,7 +31,7 @@ struct TableHost: View {
                     HStack {
                         VStack(alignment: .leading) {
                             
-                            Text(tableModel.gameId)
+                            Text(tableModel.tableId)
                             
                             ForEach(tableModel.players) { p in
                                 PlayerView(player: p)
@@ -52,7 +51,9 @@ struct TableHost: View {
                     Spacer()
                     HStack(alignment: .center) {
                         //YourCardsView(card1: card1, card2: card2)
-                        BetControls(minBet: 20, curBet: 20, controlsEnabled: tableModel.me!.acting)
+                        BetControls(controlsEnabled: tableModel.me!.acting)
+                            .blur(radius: tableModel.me!.acting ? 0 : 4)
+                            .animation(.easeInOut, value: tableModel.me!.acting)
                             
                     }
                 }

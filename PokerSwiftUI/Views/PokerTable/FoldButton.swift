@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//UNUSED
 struct FoldButton: View {
        @GestureState var isDetectingLongPress = false
        @State var completedLongPress = false

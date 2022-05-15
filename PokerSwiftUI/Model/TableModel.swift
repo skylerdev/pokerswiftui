@@ -15,43 +15,57 @@ class TableModel: ObservableObject {
     
     //MARK: - INSTANCE VARIABLES
     
-    var gameId: String = ""
+    //These are modified using fields in home page
+    var tableId: String = ""
     var myName: String = ""
-    var myPlayerId: String = ""
+    //This is a spare id just in case we want to create a game
     var generatedId: String = TableModel.randomString(length: 4)
     
+    //This callback gets overwritten by home screen
     var dataInitCallback: () -> Void = {}
     
     static let validChars = "qwertyuiopasdfghjklzxcvbnm"
     
     
+    //These variables actually control the transition between screens
+    //Thats just how navigation views work!
+    //For more info see HomeView.joinPressed()
     @Published var hosting: Bool = false
     @Published var joining: Bool = false
     
+    
     @Published var exists: Bool = false
     
+    //The game and its players
     @Published var game = Game()
     @Published var players = [Player]()
     
     //MARK: - COMPUTED PROPERTIES
     
     private let ref = Database.database().reference()
+    
+    //Just convenient firebase paths to common info
     private var rootPath: String {
-        "tables/\(gameId)"
+        "tables/\(tableId)"
     }
     private var playerPath: String {
-        "tables/\(gameId)/players"
+        "tables/\(tableId)/players"
     }
     private var gamePath: String {
-        "tables/\(gameId)/game"
+        "tables/\(tableId)/game"
     }
     private var mePath: String {
-        "tables/\(gameId)/players/\(myPlayerId)"
+        "tables/\(tableId)/players/\(myPlayerId)"
     }
     
     private var db: DatabaseReference {
         ref.child(rootPath)
     }
+    
+    //This is updated upon connecting to a game (autoid given by firebase)
+    var myPlayerId: String = ""
+    
+    //lol best way to do this so far I guess
     var me: Player? {
         return players.first { p in
             p.id == myPlayerId
@@ -77,13 +91,13 @@ class TableModel: ObservableObject {
     //MARK: - INIT
     
     init(id: String){
-        gameId = id
+        tableId = id
     }
     
     init(demoMode: Bool){
         if(demoMode){
             players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, acting: false, hasBet: true, folded: false))
-            players.append(Player(id: "meplayer", name: "Skyler", chips: 1000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: true, hasBet: false, folded: false))
+            players.append(Player(id: "meplayer", name: "Skyler", chips: 5000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: true, hasBet: false, folded: false))
             players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasBet: false, folded: true))
             players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, acting: false, hasBet: true, folded: false))
             myPlayerId = "meplayer"
@@ -92,7 +106,7 @@ class TableModel: ObservableObject {
             game.pot = 1200
             game.betExists = true
             game.phase = .preflop
-            self.gameId = "zzzz"
+            self.tableId = "zzzz"
 
         }
     }
@@ -101,7 +115,8 @@ class TableModel: ObservableObject {
 
     }
     
-    
+    //This method updates our game and players in real time when anyone makes changes to db
+    //data(as:) converts db data into the object we tell it to (think casting)
     func startListening() {
         print("Starting to listen for changes in the model")
         db.observe(.value) { snap in
@@ -118,6 +133,7 @@ class TableModel: ObservableObject {
             print(self.players)
             print("ENDCHANGE ////////////")
             
+            
             self.game = try! snap.childSnapshot(forPath: "game").data(as: Game.self)
             
             self.dataInitCallback()
@@ -133,7 +149,7 @@ class TableModel: ObservableObject {
     
     func hostGame() {
         
-        gameId = generatedId
+        tableId = generatedId
         ref.child("\(rootPath)/exists").setValue(true)
         
         do {
@@ -142,7 +158,7 @@ class TableModel: ObservableObject {
                     print(e.localizedDescription)
                     return
                 }else{
-                    print("Added Game \(self.gameId) Successfully, adding player + attaching listener...")
+                    print("Added Game \(self.tableId) Successfully, adding player + attaching listener...")
                     self.addPlayer()
                     self.startListening()
                 }
@@ -193,7 +209,7 @@ class TableModel: ObservableObject {
       
     }
     
-    
+    //all of this is subject to change
     
     func bet(amount: Int) {
         let chipsAfterBet = me!.chips - amount
@@ -312,8 +328,8 @@ class TableModel: ObservableObject {
     
     
     
-    
     //MARK: - HELPERS
+    
     
     func getRandomPlayer() -> Player {
         return players.randomElement()!
@@ -374,11 +390,12 @@ class TableModel: ObservableObject {
            return true
        }
     
-    func gameExists() {
+    func gameExists(callback: @escaping () -> Void = { }) {
         print("GameExists called at \(rootPath)")
         ref.child("\(rootPath)/exists").observeSingleEvent(of: .value) { snap in
             print(snap)
             self.exists = snap.value as? Bool ?? false
+            callback()
         }
     }
     

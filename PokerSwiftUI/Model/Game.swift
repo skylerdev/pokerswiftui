@@ -7,6 +7,9 @@
 
 import Foundation
 
+//Hand = deal of the cards
+//Phase = Round = betting round = always 4 of these
+
 struct Game: Codable {
     //There are 4 betting phases each hand
     var phase: GamePhase = .preflop

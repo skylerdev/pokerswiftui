@@ -42,19 +42,19 @@ struct HomeView: View {
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .border(.secondary)
-                    
+                
+                //Lets you join or host room
                 NavigationLink(isActive: $gameViewModel.hosting) {
                     TableHost()
                 } label: { EmptyView() }
                 
                 NavigationLink(isActive: $gameViewModel.joining) {
                     TableHost()
-                } label: {
-                    EmptyView()
-                }
+                } label: { EmptyView() }
                 
+                
+                //Buttons
                 HStack(alignment: .center, spacing: 10) {
-                   
                     HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
                     HostButton(pressed: joinPressed, valid: nameValid && gameViewModel.exists, text: "Join")
                 }
@@ -62,6 +62,7 @@ struct HomeView: View {
                     //TODO: Use an internal codeValid state in combination with .exists and nameValid?
                     //That way we can wait for .exists and even maybe add a loading indicator
                 
+                //Invalid feedback
                 Text(gameViewModel.exists ? "" : invalidFeedback)
                     .foregroundColor(gameViewModel.exists ? .green : .red)
                     .animation(.spring().delay(0.2), value: gameViewModel.exists)
@@ -82,7 +83,7 @@ struct HomeView: View {
         if(name.count > 15){
             return false
         }
-        //alphanumeric check here please
+        //TODO: alphanumeric check here please
         gameViewModel.myName = name
         
         return true
@@ -92,6 +93,7 @@ struct HomeView: View {
         print("tried to join")
         if(gameViewModel.exists){
             invalidFeedback = "Trying To Join..."
+            print("joining game \(gameViewModel.tableId)")
             gameViewModel.dataInitCallback = {
                 gameViewModel.joining = true
             }
@@ -111,22 +113,21 @@ struct HomeView: View {
     }
     
     func codeValidator(input: String) {
-        gameViewModel.gameId = input.lowercased()
+        gameViewModel.tableId = input.lowercased()
         gameViewModel.exists = false
         if(code.isEmpty){
             invalidFeedback = "Empty"
         }else if(code.count != 4){
             invalidFeedback = "Not 4 chars"
         }else{
-            
+            invalidFeedback = "Checking..."
             //code is valid, actually check db now
-            gameViewModel.gameExists()
-            invalidFeedback = "Game Does Not Exist"
+            gameViewModel.gameExists {
+                invalidFeedback = gameViewModel.exists ? "Exists" : "Game does not exist"
+            }
+            
         }
     }
-    
-    
-    
     
 }
 
