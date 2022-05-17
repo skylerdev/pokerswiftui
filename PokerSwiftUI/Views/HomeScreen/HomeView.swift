@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @EnvironmentObject var gameViewModel: TableModel
+    @EnvironmentObject var tableModel: TableModel
     @State private var code: String = ""
     @State private var name: String = ""
 
@@ -25,6 +25,7 @@ struct HomeView: View {
                     .bold()
                     .font(.largeTitle)
                 
+                
                 //The Name Field
                 TextField("Your Silly Little Name", text: $name, onEditingChanged: { isEditing in
                     if !isEditing {
@@ -33,22 +34,24 @@ struct HomeView: View {
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .border(.secondary)
+                    .limitInputLength(value: $name, length: 16)
                 
                 //The Room Code Field
                 TextField("Room Code", text: $code, onEditingChanged: { isEditing in
                     if !isEditing {
-                        codeValidator(input: code)
+                        codeValidator()
                     }})
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .border(.secondary)
+                    .limitInputLength(value: $code, length: 4)
                 
                 //Lets you join or host room
-                NavigationLink(isActive: $gameViewModel.hosting) {
+                NavigationLink(isActive: $tableModel.hosting) {
                     TableHost()
                 } label: { EmptyView() }
                 
-                NavigationLink(isActive: $gameViewModel.joining) {
+                NavigationLink(isActive: $tableModel.joining) {
                     TableHost()
                 } label: { EmptyView() }
                 
@@ -56,16 +59,16 @@ struct HomeView: View {
                 //Buttons
                 HStack(alignment: .center, spacing: 10) {
                     HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
-                    HostButton(pressed: joinPressed, valid: nameValid && gameViewModel.exists, text: "Join")
+                    HostButton(pressed: joinPressed, valid: nameValid && tableModel.exists, text: "Join")
                 }
                     
                     //TODO: Use an internal codeValid state in combination with .exists and nameValid?
                     //That way we can wait for .exists and even maybe add a loading indicator
                 
                 //Invalid feedback
-                Text(gameViewModel.exists ? "" : invalidFeedback)
-                    .foregroundColor(gameViewModel.exists ? .green : .red)
-                    .animation(.spring().delay(0.2), value: gameViewModel.exists)
+                Text(tableModel.exists ? "" : invalidFeedback)
+                    .foregroundColor(tableModel.exists ? .green : .red)
+                    .animation(.spring().delay(0.2), value: tableModel.exists)
                     .frame(width: 200)
                     .animation(.spring().speed(10), value: invalidFeedback)
               
@@ -80,24 +83,21 @@ struct HomeView: View {
         if(name.isEmpty){
             return false
         }
-        if(name.count > 15){
-            return false
-        }
         //TODO: alphanumeric check here please
-        gameViewModel.myName = name
+        tableModel.myName = name
         
         return true
     }
     
     func joinPressed() {
         print("tried to join")
-        if(gameViewModel.exists){
+        if(tableModel.exists){
             invalidFeedback = "Trying To Join..."
-            print("joining game \(gameViewModel.tableId)")
-            gameViewModel.dataInitCallback = {
-                gameViewModel.joining = true
+            print("joining game \(tableModel.tableId)")
+            tableModel.dataInitCallback = {
+                tableModel.joining = true
             }
-            gameViewModel.joinGame()
+            tableModel.joinGame()
             
         }
     }
@@ -105,25 +105,25 @@ struct HomeView: View {
     func hostPressed() {
         print("tried to host")
         invalidFeedback = "Trying To Host..."
-        gameViewModel.dataInitCallback = {
-            gameViewModel.hosting = true
+        tableModel.dataInitCallback = {
+            tableModel.hosting = true
         }
-        gameViewModel.hostGame()
+        tableModel.hostGame()
        
     }
     
-    func codeValidator(input: String) {
-        gameViewModel.tableId = input.lowercased()
-        gameViewModel.exists = false
+    func codeValidator() {
+        tableModel.exists = false
         if(code.isEmpty){
-            invalidFeedback = "Empty"
+            invalidFeedback = "Invalid"
         }else if(code.count != 4){
-            invalidFeedback = "Not 4 chars"
+            invalidFeedback = "Invalid"
         }else{
             invalidFeedback = "Checking..."
+            tableModel.tableId = code
             //code is valid, actually check db now
-            gameViewModel.gameExists {
-                invalidFeedback = gameViewModel.exists ? "Exists" : "Game does not exist"
+            tableModel.gameExists() {
+                invalidFeedback = tableModel.exists ? "Exists" : "Game does not exist"
             }
             
         }
@@ -135,5 +135,24 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(TableModel())
+    }
+}
+
+
+struct TextFieldLimitModifer: ViewModifier {
+    @Binding var value: String
+    var length: Int
+
+    func body(content: Content) -> some View {
+        content
+            .onReceive(value.publisher.collect()) {
+                value = String($0.prefix(length))
+            }
+    }
+}
+
+extension View {
+    func limitInputLength(value: Binding<String>, length: Int) -> some View {
+        self.modifier(TextFieldLimitModifer(value: value, length: length))
     }
 }
