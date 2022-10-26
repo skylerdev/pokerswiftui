@@ -45,6 +45,7 @@ struct HomeView: View {
                     .disableAutocorrection(true)
                     .border(.secondary)
                     .limitInputLength(value: $code, length: 4)
+                    
                 
                 //Lets you join or host room
                 NavigationLink(isActive: $tableModel.hosting) {
@@ -90,7 +91,8 @@ struct HomeView: View {
     }
     
     func joinPressed() {
-        print("tried to join")
+        print("joinPressed: setting model to entered code \(code)")
+        tableModel.tableId = code
         if(tableModel.exists){
             invalidFeedback = "Trying To Join..."
             print("joining game \(tableModel.tableId)")
@@ -107,6 +109,7 @@ struct HomeView: View {
         invalidFeedback = "Trying To Host..."
         tableModel.dataInitCallback = {
             tableModel.hosting = true
+            
         }
         tableModel.hostGame()
        
@@ -120,9 +123,8 @@ struct HomeView: View {
             invalidFeedback = "Invalid"
         }else{
             invalidFeedback = "Checking..."
-            tableModel.tableId = code
             //code is valid, actually check db now
-            tableModel.gameExists() {
+            tableModel.gameExists(gameID: code) {
                 invalidFeedback = tableModel.exists ? "Exists" : "Game does not exist"
             }
             

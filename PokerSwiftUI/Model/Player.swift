@@ -16,15 +16,17 @@ struct Player: Codable, Identifiable {
     var currentBet: Int = 0
     var bigBlind = false
     var acting = false
-    var hasBet = false
+    var hasActed = false
     var folded = false
     var littleBlind = false
+    
+ 
     
     mutating func reset() {
         totalRoundBet = 0
         currentBet = 0
         acting = false
-        hasBet = false
+        hasActed = false
         folded = false
         bigBlind = false
     }
@@ -32,6 +34,8 @@ struct Player: Codable, Identifiable {
     mutating func nextPhase() {
         currentBet = 0
         acting = false
-        hasBet = false
+        hasActed = false
     }
+    
+    
 }

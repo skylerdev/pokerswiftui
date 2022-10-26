@@ -15,16 +15,21 @@ struct PlayerView: View {
         
         ZStack {
             
-                //MARK: - Betting
+                //MARK: - Current Bet for Player
                 VStack {
                     HStack {
                        
                             Text("Bets:")
-                            Text("\(player.currentBet)").bold()
+                        
+                        Text("\(player.currentBet)").bold()
+                            
+                            
                             
                     }
                     .padding(.top, 10)
+                    
                 }
+            
                 .padding(10)
                 .background(.ultraThinMaterial)
                 .cornerRadius(10)
@@ -32,9 +37,12 @@ struct PlayerView: View {
                 .animation(.spring(), value: player.currentBet)
                 
                 
+              
+                
+                
                 
             
-            
+            //MARK: Main Player View
             VStack {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(player.name)
@@ -74,7 +82,7 @@ struct PlayerView: View {
                 
                 .padding()
                 .background(.ultraThickMaterial)
-                .background(player.hasBet ? .gray : .mint)
+                .background(player.hasActed ? .gray : .mint)
                 //coloring for has bet
                 .background(player.folded ? .gray : .clear)
                 .cornerRadius(10)
@@ -94,7 +102,7 @@ struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
         
         PlayerView(player:
-                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 999999, bigBlind: true, acting: true, hasBet: false, folded: false)
+                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 1236, bigBlind: true, acting: true, hasActed: false, folded: false)
         
         
             )

@@ -18,8 +18,6 @@ class TableModel: ObservableObject {
     //These are modified using fields in home page
     var tableId: String = ""
     var myName: String = ""
-    //This is a spare id just in case we want to create a game
-    var generatedId: String = TableModel.randomString(length: 4)
     
     //This callback gets overwritten by home screen
     var dataInitCallback: () -> Void = {}
@@ -96,10 +94,10 @@ class TableModel: ObservableObject {
     
     init(demoMode: Bool){
         if(demoMode){
-            players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, acting: false, hasBet: true, folded: false))
-            players.append(Player(id: "meplayer", name: "Skyler", chips: 5000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: true, hasBet: false, folded: false))
-            players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasBet: false, folded: true))
-            players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, acting: false, hasBet: true, folded: false))
+            players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, acting: false, hasActed: true, folded: false))
+            players.append(Player(id: "meplayer", name: "Skyler", chips: 5000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: true, hasActed: false, folded: false))
+            players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasActed: false, folded: true))
+            players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, acting: false, hasActed: true, folded: false))
             myPlayerId = "meplayer"
             
             game.beingPlayed = true
@@ -131,7 +129,7 @@ class TableModel: ObservableObject {
                 return try! snap.data(as: Player.self)
             })
             print(self.players)
-            print("ENDCHANGE ////////////")
+            print("ENDCHANGE // \(TableModel.randomString(length: 9))")
             
             
             self.game = try! snap.childSnapshot(forPath: "game").data(as: Game.self)
@@ -149,16 +147,20 @@ class TableModel: ObservableObject {
     
     func hostGame() {
         
-        tableId = generatedId
-        ref.child("\(rootPath)/exists").setValue(true)
+        let genID = TableModel.randomString(length: 4)
+        self.tableId = genID
+
         
+        ref.child("\(rootPath)/exists").setValue(true)
+        print(rootPath)
         do {
             try ref.child(gamePath).setValue(from: game) { err in
                 if let e = err {
                     print(e.localizedDescription)
                     return
                 }else{
-                    print("Added Game \(self.tableId) Successfully, adding player + attaching listener...")
+                    print("Added Game \(genID) Successfully, adding player + attaching listener...")
+                    print("\(self.tableId)")
                     self.addPlayer()
                     self.startListening()
                 }
@@ -190,6 +192,8 @@ class TableModel: ObservableObject {
             print(ref)
         }
         
+        
+        
         let randomIndex = getRandomIndex()
         
         let p1 = players[randomIndex]
@@ -206,6 +210,7 @@ class TableModel: ObservableObject {
             let p3 = players[resolveIndex(index: randomIndex+2)].id
             ref.child(pidToPath(id: p3)).updateChildValues(["acting" : true])
         }
+        ref.child(gamePath).updateChildValues(["betExists" : true])
       
     }
     
@@ -231,14 +236,54 @@ class TableModel: ObservableObject {
         nextPlayer()
     }
     
+    func handIsComplete() -> Bool {
+        var unfolded = 0
+        var acted = 0
+        for player in players {
+            if(!player.folded){
+                unfolded += 1
+            }
+            if(player.hasActed){
+                acted += 1
+            }
+        }
+        //case 1: everyone folded. last man standing wins
+        if(unfolded == 1){
+        //awardLastMan()
+        }
+        //case 2: everyone bet. move on dumbass
+        if(acted == unfolded){
+            return true
+        }
+        return true
+    }
+    
     func nextPlayer() {
-       //get next player somehow
-        
         ref.child(mePath).updateChildValues(["acting" : false])
+        
+        
+        //handComplete
+        if(handIsComplete()){
+            return
+        }
+        
+        //are we done the current hand?
         let nextIndex = resolveIndex(index: currentlyPlayingIndex+1)
-        print("\(currentlyPlayingIndex) next: \(nextIndex)")
+        let nPlayer = players[nextIndex]
+        
+        while(nPlayer.folded == true){
+           // nPlayer = resolveIndex(index: <#T##Int#>)
+        }
+        
         let id = players[nextIndex].id
         print("\(id), \(players[nextIndex].name)")
+        
+        
+        
+       //get next player somehow
+        
+        print("\(currentlyPlayingIndex) next: \(nextIndex)")
+
         ref.child(pidToPath(id: id)).updateChildValues(["acting" : true])
         
     }
@@ -390,9 +435,10 @@ class TableModel: ObservableObject {
            return true
        }
     
-    func gameExists(callback: @escaping () -> Void = { }) {
-        print("GameExists called at \(rootPath)")
-        ref.child("\(rootPath)/exists").observeSingleEvent(of: .value) { snap in
+    func gameExists(gameID: String, callback: @escaping () -> Void = { }) {
+        let rPath = "/tables/\(gameID)"
+        print("GameExists called at \(rPath)")
+        ref.child("\(rPath)/exists").observeSingleEvent(of: .value) { snap in
             print(snap)
             self.exists = snap.value as? Bool ?? false
             callback()

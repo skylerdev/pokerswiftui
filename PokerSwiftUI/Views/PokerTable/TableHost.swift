@@ -67,7 +67,7 @@ struct TableHost_Previews: PreviewProvider {
     static var previews: some View {
         TableHost()
             .environmentObject(TableModel(demoMode: true))
-            
+            		
     }
 }
 
