@@ -12,25 +12,35 @@ struct CardView: View {
     var x = true
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        VStack(alignment: .trailing) {
             
-            Text(card.rank.rawValue)
-                .bold()
-                .font(.body)
+            HStack {
+                Text(card.rank.rawValue)
+                    .bold()
+                    .font(.body)
+                    .padding(.leading, 1)
+                Spacer()
+            }.padding(.top, -2)
+           
+          
+                Spacer()
+                Image(systemName: "suit.\(card.suit.rawValue).fill")
+                    .opacity(0.40)
+                    .scaledToFill()
+                    .scaleEffect(1.5, anchor: .bottomTrailing)
+                    
+                    
             
-            Image(systemName: "suit.\(card.suit.rawValue).fill")
-                .resizable()
-                .opacity(0.40)
-                .scaledToFit()
-                .offset(x: card.suit == .diamond ? 16 : 10)
-                .padding(.top, 23)
+                
             
         }
         .foregroundColor(
             card.suit == .heart || card.suit == .diamond ? .red : .black
         )
         .frame(width: 30, height: 50, alignment: .topLeading)
+        
         .background(.ultraThickMaterial)
+        .clipped()
         
     }
 }
@@ -43,6 +53,6 @@ struct CardView_Previews: PreviewProvider {
             CardView(card: Card(suit: .spade, rank: .ten) )
             CardView(card: Card(suit: .heart, rank: .two))
         }
-        .previewLayout(.sizeThatFits)
+
     }
 }

@@ -18,6 +18,7 @@ class TableModel: ObservableObject {
     //These are modified using fields in home page
     var tableId: String = ""
     var myName: String = ""
+    var feedback: String = ""
     
     //This callback gets overwritten by home screen
     var dataInitCallback: () -> Void = {}
@@ -46,7 +47,7 @@ class TableModel: ObservableObject {
     private var rootPath: String {
         "tables/\(tableId)"
     }
-    private var playerPath: String {
+    private var playersPath: String {
         "tables/\(tableId)/players"
     }
     private var gamePath: String {
@@ -74,13 +75,13 @@ class TableModel: ObservableObject {
             p.acting == true
         }
     }
-    var currentlyPlayingIndex: Int {
+    var currentlyPlayingIndex: Int? {
         for i in 0..<players.count {
             if(players[i].acting){
                 return i
             }
         }
-        return -1
+        return nil
     }
     
     
@@ -175,7 +176,7 @@ class TableModel: ObservableObject {
         
     }
     
-    //MARK: - GAME FLOW
+    //MARK: - GAME FLOW (POKER LOGIC)
     
     func startGame() {
         print("Starting game...")
@@ -192,51 +193,170 @@ class TableModel: ObservableObject {
             print(ref)
         }
         
+        let i = getRandomIndex()
         
+        setBlinds(bigBlindIndex: i)
+      
+    }
+    
+    func setBlinds(bigBlindIndex: Int) {
+        for p in players {
+            ref.child(pidToPath(id: p.id)).updateChildValues(["bigBlind" : false, "littleBlind" : false])
+        }
         
-        let randomIndex = getRandomIndex()
-        
-        let p1 = players[randomIndex]
+        let i = bigBlindIndex
         //make one guy the big blind
+        let p1 = players[i]
         bigBlind(p: p1)
         
-        let p2 = players[resolveIndex(index: randomIndex+1)]
         //make the guy after him the little blind
+        let p2 = players[resolveIndex(i+1)]
         littleBlind(p: p2)
         
         if(players.count == 2){
             ref.child(pidToPath(id: p2.id)).updateChildValues(["acting" : true])
         }else{
-            let p3 = players[resolveIndex(index: randomIndex+2)].id
+            let p3 = players[resolveIndex(i+2)].id
             ref.child(pidToPath(id: p3)).updateChildValues(["acting" : true])
         }
         ref.child(gamePath).updateChildValues(["betExists" : true])
-      
     }
     
-    //all of this is subject to change
+    //MARK: BETCHECKFOLD
     
+    //BET
     func bet(amount: Int) {
         let chipsAfterBet = me!.chips - amount
-        
-        ref.child(mePath).updateChildValues(["currentBet" : me!.currentBet + amount,
-                                             "chips" : chipsAfterBet,
-                                             "hasBet" : true ])
-        ref.child(gamePath).updateChildValues(["betExists" : true])
-        nextPlayer()
+        for i in 0..<players.count {
+            if(players[i].id == myPlayerId){
+                players[i].currentBet = me!.currentBet + amount
+                players[i].chips = chipsAfterBet
+                players[i].hasActed = true
+            }
+        }
+        game.betExists = true
+        self.pushPlayers()
+        self.pushGame()
+       
+        self.goNext()
     }
     
+    //CHECK
     func check() {
-        ref.child(mePath).updateChildValues(["hasBet" : true])
-        nextPlayer()
+        for i in 0..<players.count {
+            if(players[i].id == myPlayerId){
+                players[i].hasActed = true
+            }
+        }
+        self.pushPlayers()
+        self.goNext()
     }
     
+    //FOLD
     func fold() {
-        ref.child(mePath).updateChildValues(["folded" : true])
-        nextPlayer()
+        for i in 0..<players.count {
+            if(players[i].id == myPlayerId){
+                players[i].folded = true
+            }
+        }
+        self.pushPlayers()
+        self.goNext()
     }
     
-    func handIsComplete() -> Bool {
+    
+    
+    
+    func goNext() {
+        print("gonext Called")
+        ref.child(mePath).updateChildValues(["acting" : false])
+        
+        if(handIsOver()){
+            endHand()
+            return
+        }
+        
+        if(phaseIsOver()){
+            endPhase()
+            return
+        }
+        
+        guard let nextUnfoldedId = nextUnfoldedId() else {
+            print("goNext() failed :( running endHand()")
+            endHand()
+            return
+        }
+        
+        ref.child(pidToPath(id: nextUnfoldedId)).updateChildValues(["acting" : true])
+        
+    }
+    
+    func phaseIsOver() -> Bool {
+        print("isPhaseOver")
+        //does someone unfolded still have to play?
+        //has everyone called the current biggest bet?
+        
+        let maxBet = curMaxBet()
+        for player in players {
+            print("\(player.name) folded? \(player.folded) bet? \(player.currentBet) max? \(maxBet)")
+            if(!player.folded){
+                if(!player.hasActed || player.currentBet != maxBet){
+                    print("phase not over!")
+                    return false
+                }
+            }
+        }
+        
+        print("phase over!")
+        //phase over
+        return true
+        
+        
+    }
+    
+    func endPhase() {
+        print("ending the phase....")
+        var roundPot = 0
+
+        for i in 0..<players.count {
+            let id = players[i].id
+            
+            //pot collects bets
+            roundPot += players[i].currentBet
+            players[i].currentBet = 0
+
+    
+            //everyone unfolded has not acted
+            if(!players[i].folded){
+                players[i].hasActed = false
+                players[i].acting = false
+            }
+        }
+        
+        game.pot = game.pot + roundPot
+    
+        //give the next unfolded guy from bb actor
+        
+        guard let blindIndex = getBigBlindIndex() else {
+            print("endPhase: couldnt find a big blind")
+            return
+        }
+        var i = blindIndex
+        for _ in players {
+            if(!players[resolveIndex(i)].folded){
+                players[resolveIndex(i)].acting = true
+                break
+            }
+            i += 1
+        }
+        game.phase = GamePhase(rawValue: game.phase.rawValue + 1)!
+        feedback = "entering phase \(game.phase.rawValue)"
+        pushGame()
+        pushPlayers()
+        
+    }
+    
+    func handIsOver() -> Bool {
+        print("isHandOver? ")
         var unfolded = 0
         var acted = 0
         for player in players {
@@ -249,45 +369,56 @@ class TableModel: ObservableObject {
         }
         //case 1: everyone folded. last man standing wins
         if(unfolded == 1){
-        //awardLastMan()
-        }
-        //case 2: everyone bet. move on dumbass
-        if(acted == unfolded){
             return true
         }
-        return true
+        //case 2: we are at the end.
+        if(phaseIsOver() && game.phase == .river){
+            return true
+        }
+        print(" unfolded: \(unfolded) acted: \(acted)")
+        return false
     }
     
-    func nextPlayer() {
-        ref.child(mePath).updateChildValues(["acting" : false])
+    func endHand(){
         
+        var unfolded: String = ""
         
-        //handComplete
-        if(handIsComplete()){
+        for p in players {
+            if(!p.folded){
+                unfolded = unfolded + p.name + " "
+            }
+            ref.child(pidToPath(id: p.id)).updateChildValues([
+                "totalRoundBet" : 0,
+                "currentBet" : 0,
+                "acting" : false,
+                "hasActed" : false,
+                "folded" : false
+            ])
+        }
+        
+        game.betExists = false
+        game.handNumber += 1
+        game.phase = .preflop
+        game.pot = 0
+        
+        pushGame()
+        feedback = "winner was " + unfolded
+        
+
+        let index = getBigBlindIndex()
+        guard let bb = index else {
+            print("endHand: couldnt find bigblind")
             return
         }
-        
-        //are we done the current hand?
-        let nextIndex = resolveIndex(index: currentlyPlayingIndex+1)
-        let nPlayer = players[nextIndex]
-        
-        while(nPlayer.folded == true){
-           // nPlayer = resolveIndex(index: <#T##Int#>)
-        }
-        
-        let id = players[nextIndex].id
-        print("\(id), \(players[nextIndex].name)")
-        
-        
-        
-       //get next player somehow
-        
-        print("\(currentlyPlayingIndex) next: \(nextIndex)")
-
-        ref.child(pidToPath(id: id)).updateChildValues(["acting" : true])
-        
+        setBlinds(bigBlindIndex: resolveIndex(bb+1))
     }
     
+    func getBigBlindIndex() -> Int? {
+       return players.firstIndex { p in
+            p.bigBlind == true
+        }
+    }
+
     func bigBlind(p: Player){
         let bbAmt = game.minBet * 2
         let chipsAfter = p.chips - bbAmt
@@ -296,7 +427,7 @@ class TableModel: ObservableObject {
             
         }else{
         ref.child(pidToPath(id: p.id)).updateChildValues(["bigBlind" : true,
-                                                              "hasBet" : true,
+                                                              "hasActed" : true,
                                                            "currentBet" : bbAmt,
                                                            "chips" : chipsAfter
                                                              ])
@@ -310,7 +441,7 @@ class TableModel: ObservableObject {
             //TODO: All in blind
         }else{
             ref.child(pidToPath(id: p.id)).updateChildValues(["littleBlind" : true,
-                                                                  "hasBet" : true,
+                                                                  "hasActed" : true,
                                                                "currentBet" : lbAmt,
                                                                "chips" : chipsAfter
                                                                  ])
@@ -318,63 +449,34 @@ class TableModel: ObservableObject {
     }
     
     
-    //TODO: Unfinished
-    func nextPhase(){
-        for i in 0..<players.count {
-            let id = players[i].id
-            ref.child(pidToPath(id: id)).updateChildValues([
-                "acting" : false,
-                "hasBet" : false,
-                "currentBet" : 0
-            ])
+    func curMaxBet() -> Int {
+        var bets: [Int] = []
+        for p in players {
+            bets.append(p.currentBet)
         }
-        //find blind, get next unfolded player
-        let bIndex = players.firstIndex { p in
-            p.bigBlind == true
-        }
-        guard let blindIndex = bIndex else {
-            return
-        }
-
-        print("blind index = \(blindIndex)")
-        var unfoldedIndex = blindIndex
-        while(players[unfoldedIndex].folded == true){
-            unfoldedIndex += 1
-            if(unfoldedIndex == players.count) {
-                
-            }
-            if(unfoldedIndex == blindIndex){
-                
-            }
-        }
-        
-        //make them acting = true
-        
+        return bets.max() ?? -99999
     }
-    
-    
-    
-    //TODO: Unfinished
-    func newRound(){
-        for i in 0..<players.count {
-            let id = players[i].id
-            ref.child(pidToPath(id: id)).updateChildValues([
-                "totalRoundBet" : 0,
-                "currentBet" : 0,
-                "acting" : false,
-                "hasBet" : false,
-                "folded" : false
-            ])
-        }
-        
-        //find blind, increment it
-        
-    }
-    
     
     
     //MARK: - HELPERS
     
+    func nextUnfoldedId() -> String? {
+        //get current player
+        guard let currentIndex = currentlyPlayingIndex else {
+            print("nextUnfoldedId: no current player?")
+            return nil
+        }
+        var i = currentIndex
+        for _ in players {
+            i += 1
+            let j = resolveIndex(i)
+            if(players[j].folded == false){
+                return players[j].id
+            }
+        }
+        print("nextUnfoldedId: no unfolded players??")
+        return nil
+    }
     
     func getRandomPlayer() -> Player {
         return players.randomElement()!
@@ -384,7 +486,7 @@ class TableModel: ObservableObject {
         Int.random(in: 0..<players.count)
     }
     
-    func resolveIndex(index: Int) -> Int {
+    func resolveIndex(_ index: Int) -> Int {
         if(index < players.count){
             return index
         }
@@ -393,7 +495,7 @@ class TableModel: ObservableObject {
     }
     
     func pidToPath(id: String) -> String {
-        return "\(playerPath)/\(id)"
+        return "\(playersPath)/\(id)"
     }
     
     func playerFromId(id: String) -> Player? {
@@ -403,7 +505,7 @@ class TableModel: ObservableObject {
     }
     
     func addPlayer(){
-        guard let autoId = ref.child(playerPath).childByAutoId().key else {
+        guard let autoId = ref.child(playersPath).childByAutoId().key else {
             print("joinGame autoId failure")
             return
         }
@@ -445,6 +547,36 @@ class TableModel: ObservableObject {
         }
     }
     
+    func pushPlayers() {
+        for p in players {
+            do {
+                try ref.child(pidToPath(id: p.id)).setValue(from: p)
+            } catch let error {
+                print("pushPlayers setValue error")
+                print(error.localizedDescription)
+            }
+        }
+      
+    }
+    
+    func pushGame() {
+        do {
+            try ref.child(gamePath).setValue(from: game) { err in
+                if let e = err {
+                    print(e.localizedDescription)
+                    return
+                }else{
+                    print("pushed game")
+                }
+                
+            }
+        } catch let error {
+            print("pushgame error")
+            print(error.localizedDescription)
+            return
+        }
+
+    }
    
     
 }

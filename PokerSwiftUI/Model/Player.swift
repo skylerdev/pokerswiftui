@@ -19,8 +19,12 @@ struct Player: Codable, Identifiable {
     var hasActed = false
     var folded = false
     var littleBlind = false
-    
- 
+    var hasBet: Bool {
+        return currentBet != 0
+    }
+    var isAllIn: Bool {
+        return chips == 0 && hasBet
+    }
     
     mutating func reset() {
         totalRoundBet = 0

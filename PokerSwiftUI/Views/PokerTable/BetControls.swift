@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct BetControls: View {
-
+    
     @State var percentSelected: Percent = .ten
     var controlsEnabled: Bool
-  //  @State var betText: String = "Bet"
+  //@State var betText: String = "Bet"
     
     @EnvironmentObject var tableModel: TableModel
     
@@ -20,7 +20,7 @@ struct BetControls: View {
     }
     
     var minBet: Float {
-        if(tableModel.game.betExists){
+        if(tableModel.curMaxBet() != 0){
             var bets: [Int] = []
             for p in tableModel.players {
                 bets.append(p.currentBet)
@@ -99,24 +99,25 @@ struct BetControls: View {
             
                     
                 //CALL / RAISE TEXT
-                if(tableModel.game.betExists){
+                if(tableModel.curMaxBet() != 0){
                     Button(curBet <= minBet ? "Call" : "Raise") {
+                        print("Call / Raise Pressed")
                         //get biggest amt currently bet in the table. use it
                         curBet = curBet <= minBet ? minBet : curBet
                         tableModel.bet(amount: Int(curBet))
                     }.padding()
                     Button("Fold") {
-                        print("just hit the fold button")
+                        print("Fold Pressed")
                         tableModel.fold()
                     }
                 } else {
                     Button("Bet") {
-                        print("Just hit the bet button")
+                        print("Bet Pressed")
                         curBet = curBet <= minBet ? minBet : curBet
                         tableModel.bet(amount: Int(curBet))
                     }.padding()
                     Button("Check") {
-                        print("Just hit the check button")
+                        print("Check Pressed")
                         tableModel.check()
                     }.padding()
                 }

@@ -33,6 +33,9 @@ struct TableHost: View {
                             
                             Text(tableModel.tableId)
                             
+                            Text(tableModel.feedback)
+                            Text("pot: \(tableModel.game.pot)")
+                            
                             ForEach(tableModel.players) { p in
                                 PlayerView(player: p)
                             }.padding()

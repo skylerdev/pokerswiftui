@@ -33,8 +33,9 @@ struct Game: Codable {
     var minBet: Int = 20
     
     
-    
 }
+
+
 
 
 enum GamePhase: Int, Codable, CaseIterable {
