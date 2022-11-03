@@ -103,7 +103,6 @@ class TableModel: ObservableObject {
             
             game.beingPlayed = true
             game.pot = 1200
-            game.betExists = true
             game.phase = .preflop
             self.tableId = "zzzz"
 
@@ -219,7 +218,6 @@ class TableModel: ObservableObject {
             let p3 = players[resolveIndex(i+2)].id
             ref.child(pidToPath(id: p3)).updateChildValues(["acting" : true])
         }
-        ref.child(gamePath).updateChildValues(["betExists" : true])
     }
     
     //MARK: BETCHECKFOLD
@@ -234,7 +232,6 @@ class TableModel: ObservableObject {
                 players[i].hasActed = true
             }
         }
-        game.betExists = true
         self.pushPlayers()
         self.pushGame()
        
@@ -396,7 +393,6 @@ class TableModel: ObservableObject {
             ])
         }
         
-        game.betExists = false
         game.handNumber += 1
         game.phase = .preflop
         game.pot = 0
