@@ -118,8 +118,8 @@ class TableModel: ObservableObject {
     func startListening() {
         print("Starting to listen for changes in the model")
         db.observe(.value) { snap in
-            print("CHANGE IN MODEL //////////")
-            print(snap)
+            
+            
             let playerRef = snap.childSnapshot(forPath: "players")
             guard let children = playerRef.children.allObjects as? [DataSnapshot] else {
                 print("couldnt get all child objects")
@@ -128,6 +128,10 @@ class TableModel: ObservableObject {
             self.players = children.compactMap({ snap in
                 return try! snap.data(as: Player.self)
             })
+            
+            
+            print("CHANGE IN MODEL //////////")
+            print(snap)
             print(self.players)
             print("ENDCHANGE // \(TableModel.randomString(length: 9))")
             
@@ -193,7 +197,6 @@ class TableModel: ObservableObject {
         }
         
         let i = getRandomIndex()
-        
         setBlinds(bigBlindIndex: i)
       
     }
@@ -260,9 +263,6 @@ class TableModel: ObservableObject {
         self.goNext()
     }
     
-    
-    
-    
     func goNext() {
         print("gonext Called")
         ref.child(mePath).updateChildValues(["acting" : false])
@@ -278,7 +278,7 @@ class TableModel: ObservableObject {
         }
         
         guard let nextUnfoldedId = nextUnfoldedId() else {
-            print("goNext() failed :( running endHand()")
+            
             endHand()
             return
         }
