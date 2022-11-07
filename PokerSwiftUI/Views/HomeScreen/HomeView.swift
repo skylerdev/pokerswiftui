@@ -31,9 +31,9 @@ struct HomeView: View {
                     if !isEditing {
                         nameValid = nameValidator()
                     }})
-                    .textInputAutocapitalization(.never)
+                    //.textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
-                    .border(.secondary)
+                    //.border(.secondary)
                     .limitInputLength(value: $name, length: 16)
                 
                 //The Room Code Field
@@ -41,20 +41,20 @@ struct HomeView: View {
                     if !isEditing {
                         codeValidator()
                     }})
-                    .textInputAutocapitalization(.never)
+                    //.textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
-                    .border(.secondary)
+                    //.border(.secondary)
                     .limitInputLength(value: $code, length: 4)
                     
                 
                 //Lets you join or host room
-                NavigationLink(isActive: $tableModel.hosting) {
-                    TableHost()
-                } label: { EmptyView() }
-                
-                NavigationLink(isActive: $tableModel.joining) {
-                    TableHost()
-                } label: { EmptyView() }
+//                NavigationLink(isActive: $tableModel.hosting) {
+//                    TableHost()
+//                } label: { EmptyView() }
+//
+//                NavigationLink(isActive: $tableModel.joining) {
+//                    TableHost()
+//                } label: { EmptyView() }
                 
                 
                 //Buttons
