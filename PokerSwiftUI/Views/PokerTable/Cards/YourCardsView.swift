@@ -13,16 +13,18 @@ struct YourCardsView: View {
     
     var body: some View {
         ZStack {
-           CardView(card: card1)
-              
             CardView(card: card2)
-                .offset(x: 10, y: 10)
+//                    .shadow(radius: 2, x:2)
+                    .rotationEffect(Angle(degrees: 10))
+                    .offset(x:25)
+            CardView(card: card1)
+                 .rotationEffect(Angle(degrees: -10))
+//                 .shadow(radius: 2, x:2)
+                 .offset(x:-25)
+
         }
        // .padding(.all, 6.0)
-        .padding()
-            
-            .background(.ultraThinMaterial)
-            .cornerRadius(2)
+        .padding(.leading, 25)
         
     }
 }

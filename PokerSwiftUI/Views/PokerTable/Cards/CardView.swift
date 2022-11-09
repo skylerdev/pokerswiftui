@@ -12,35 +12,27 @@ struct CardView: View {
     var x = true
     
     var body: some View {
-        VStack(alignment: .trailing) {
+        VStack(alignment: .leading) {
             
             HStack {
                 Text(card.rank.rawValue)
                     .bold()
                     .font(.body)
-                    .padding(.leading, 1)
-                Spacer()
-            }.padding(.top, -2)
-           
-          
-                Spacer()
-                Image(systemName: "suit.\(card.suit.rawValue).fill")
-                    .opacity(0.40)
-                    .scaledToFill()
-                    .scaleEffect(1.5, anchor: .bottomTrailing)
-                    
-                    
+                    .dynamicTypeSize(.accessibility1)
+                    .padding(.horizontal, 3)
+            }
             
-                
-            
+            Text(card.toIcon())
+                .font(.custom("Courier", size: 100))
+                .opacity(0.40)
+                .offset(x: 10, y: -25)
         }
         .foregroundColor(
             card.suit == .heart || card.suit == .diamond ? .red : .black
         )
-        .frame(width: 30, height: 50, alignment: .topLeading)
-        
+        .frame(width: 50, height: 70, alignment: .topLeading)
         .background(.ultraThickMaterial)
-        .clipped()
+        .cornerRadius(4)
         
     }
 }

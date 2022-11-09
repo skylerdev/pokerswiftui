@@ -125,7 +125,7 @@ struct BetControls: View {
                 
                 
             }
-        }.background(.ultraThickMaterial)
+        }.background(.regularMaterial)
             .foregroundColor(controlsEnabled ? .accentColor : .gray)
             .disabled(!controlsEnabled)
             

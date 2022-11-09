@@ -52,8 +52,11 @@ struct TableHost: View {
                         }
                     }
                     Spacer()
-                    HStack(alignment: .center) {
-                        //YourCardsView(card1: card1, card2: card2)
+                    VStack(alignment: .leading) {
+                        YourCardsView(card1: Card(suit: .club, rank: .ace), card2: Card(suit: .diamond, rank: .ace))
+                            .padding(.horizontal, 20)
+                            .offset(y:10)
+
                         BetControls(controlsEnabled: tableModel.me!.acting)
                             .blur(radius: tableModel.me!.acting ? 0 : 4)
                             .animation(.easeInOut, value: tableModel.me!.acting)
