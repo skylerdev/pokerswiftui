@@ -59,14 +59,6 @@ struct HomeView: View {
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .disabled(hostToggled)
-                    
-                        Divider()
-                            .offset(x : -20)
-                        
-                    Toggle(isOn: $hostToggled) {
-                        Text("Hosting?")
-                    }
-                    .offset(x: -10)
                     }
                     .frame(height: 50)
                     .background(.thickMaterial)
@@ -84,9 +76,11 @@ struct HomeView: View {
                     
                     HStack(alignment: .center) {
                         HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
-                            .padding()
+                            .padding(.horizontal)
+                            .padding(.trailing, -10)
                         HostButton(pressed: joinPressed, valid: nameValid && tableModel.exists, text: "Join")
-                            .padding()
+                            .padding(.horizontal)
+                            .padding(.leading, -10)
                     }
                     
                     //.background(.blue)
