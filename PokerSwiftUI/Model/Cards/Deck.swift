@@ -13,10 +13,6 @@ class CardDeck {
     
     init(){
         deck = [Card]()
-        initDeck()
-    }
-    
-    func initDeck() {
         for suit in Suit.allCases {
             for rank in Rank.allCases {
                 deck.append(Card(suit: suit, rank: rank))
