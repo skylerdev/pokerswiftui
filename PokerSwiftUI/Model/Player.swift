@@ -25,6 +25,7 @@ struct Player: Codable, Identifiable {
     var isAllIn: Bool {
         return chips == 0 && hasBet
     }
+    var cards: [Card] = [Card(suit: .spade, rank: .ace), Card(suit: .heart, rank: .two)]
     
     mutating func reset() {
         totalRoundBet = 0

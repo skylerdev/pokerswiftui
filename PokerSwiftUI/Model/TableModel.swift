@@ -198,6 +198,7 @@ class TableModel: ObservableObject {
         
         let i = getRandomIndex()
         setBlinds(bigBlindIndex: i)
+        dealCards()
       
     }
     
@@ -407,6 +408,7 @@ class TableModel: ObservableObject {
             return
         }
         setBlinds(bigBlindIndex: resolveIndex(bb+1))
+        dealCards()
     }
     
     func getBigBlindIndex() -> Int? {
@@ -428,6 +430,44 @@ class TableModel: ObservableObject {
                                                            "chips" : chipsAfter
                                                              ])
         }
+    }
+    
+    func dealCards() {
+        print("dealing cards")
+     
+        //Deck Generator
+        let deck = CardDeck()
+        
+        
+        //cards to players
+        for p in players {
+            let playerHand = [deck.popCard()!, deck.popCard()!]
+            do {
+                try ref.child("\(pidToPath(id: p.id))/cards").setValue(from: playerHand)
+            } catch let error {
+                print("dealCards setValuePlayer error: \(error.localizedDescription)")
+            }
+        }
+
+        //cards to game
+        var gameCards = [Card]()
+        for i in 0...2 {
+            //burn
+            deck.popCard()
+            //turn
+            gameCards.append(deck.popCard()!)
+            if(i == 2){
+                gameCards.append(deck.popCard()!)
+                gameCards.append(deck.popCard()!)
+            }
+        }
+        do {
+            try ref.child("\(gamePath)/cards").setValue(from: gameCards)
+        } catch let error {
+            print("dealCards setValueGame error: \(error.localizedDescription)")
+        }
+
+        
     }
     
     func littleBlind(p: Player){
