@@ -18,13 +18,22 @@ struct TableCardsView: View {
     var body: some View {
         VStack {
             CardView(card: card1)
+                .padding(.all, 2)
             CardView(card: card2)
+                .padding(.all, 2)
             CardView(card: card3)
+                .padding(.all, 2)
             CardView(card: card4)
+                .padding(.all, 2)
             CardView(card: card5)
+                .padding(.all, 2)
         }
-       // .padding(.all, 6.0)
-        .padding(.leading, 25)
+        
+        .padding(.vertical, 20)
+        .padding(.horizontal, 18)
+        .background(.black.opacity(0.2))
+        .cornerRadius(16)
+        .scaleEffect(0.9)
         
     }
 }

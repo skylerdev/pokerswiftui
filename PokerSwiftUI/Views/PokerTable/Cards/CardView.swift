@@ -12,30 +12,43 @@ struct CardView: View {
     var x = true
     
     var body: some View {
-        VStack(alignment: .leading) {
-            
-            HStack {
-                Text(card.rank.rawValue)
-                    .bold()
-                    .font(.body)
-                    .dynamicTypeSize(.accessibility4)
-                    .padding(.horizontal, 6)
-            }
-            
+        ZStack(alignment: .topLeading) {
             Text(card.toIcon())
                 .font(.custom("Courier", size: 200))
                 .opacity(0.40)
-                .offset(x: 20, y: -50)
+                .offset(x:20)
+                .padding(.bottom, -60)
+                .padding(.horizontal, -10)
+            
+            Text(card.rank.rawValue)
+                    .bold()
+                    .font(.custom("appleSDGothicNeo-Regular", size: 20))
+                    .dynamicTypeSize(.accessibility4)
+                    .padding(.all, 3)
+                    .padding(.horizontal, 5)
+                    .foregroundColor(card.suit == .heart || card.suit == .diamond ? .primary : .black.opacity(0.0))
+                    .colorInvert()
+                    .offset(x:1, y:1)
+            
+            Text(card.rank.rawValue)
+                    .bold()
+                    .font(.custom("AppleSDGothicNeo-Regular", size: 20))
+                    .dynamicTypeSize(.accessibility4)
+                    .padding(.all, 3)
+                    .padding(.horizontal, 5)
+                    .foregroundColor(card.suit == .heart || card.suit == .diamond ? .red : .primary)
+            
+
         }
         .foregroundColor(
-            card.suit == .heart || card.suit == .diamond ? .red : .black
+            card.suit == .heart || card.suit == .diamond ? .red : .primary
         )
-        .frame(width: 100, height: 140, alignment: .topLeading)
+        //.frame(width: 100, height: 140, alignment: .topLeading)
         .background(.ultraThickMaterial)
         .cornerRadius(8)
         .overlay(RoundedRectangle(cornerRadius: 8)
             .stroke(.gray, lineWidth: 1)
-            .opacity(0.4))
+            )
         
     }
 }

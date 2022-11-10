@@ -10,6 +10,7 @@ import SwiftUI
 struct TableHost: View {
     
     @EnvironmentObject var tableModel: TableModel
+    @Environment(\.colorScheme) var colorScheme
     
     
     var body: some View {       
@@ -19,6 +20,7 @@ struct TableHost: View {
                     .scale(y: 3)
                     .offset(x: 180, y: 9)
                     .foregroundColor(.green)
+                    .opacity(colorScheme == .dark ? 0.4 : 1)
                 
                 //EVERYTHING ELSE
                 VStack {
@@ -46,6 +48,7 @@ struct TableHost: View {
                                            , card3: Card(suit: .heart, rank: .two), card4: Card(suit: .spade, rank: .queen), card5: Card(suit: .diamond, rank: .ten), stage: .flop)
                             .scaleEffect(x:0.8, y:0.8)
                             .padding(.bottom, -100)
+                            .padding(.top, 20)
                         case .flop:
                             Text("Flop")
                         case .river:
@@ -60,12 +63,15 @@ struct TableHost: View {
                             .padding(.leading, 80)
                             .padding(.bottom, -40)
 
+
                         BetControls(controlsEnabled: tableModel.me!.acting)
                             .blur(radius: tableModel.me!.acting ? 0 : 4)
                             .animation(.easeInOut, value: tableModel.me!.acting)
                             
                     }
+                    .padding(.top, -200)
                 }
+                .padding(.top, -100)
                 
                 
             } //ZSTACK: MAIN SCREEN
