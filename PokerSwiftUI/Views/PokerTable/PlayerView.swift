@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PlayerView: View {
     var player: Player
+    @Environment(\.colorScheme) var colorScheme
     
     
     var body: some View {
@@ -20,8 +21,10 @@ struct PlayerView: View {
                     HStack {
                        
                             Text("Bets:")
+                            .foregroundColor(.primary)
                         
                         Text("\(player.currentBet)").bold()
+                            .foregroundColor(.primary)
                             
                             
                             
@@ -47,6 +50,7 @@ struct PlayerView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(player.name)
                         .bold()
+                        .foregroundColor(.primary)
                   
                         HStack(){
                         Image("PokerChip")
@@ -55,25 +59,30 @@ struct PlayerView: View {
                             .frame(width: 25, height: 25)
                             //opacity workaround for folding
                             .overlay(content: {
-                                Circle().foregroundColor(Color(.sRGB, red: 1, green: 1, blue: 1, opacity: player.folded ? 0.60 : 0.00))
+                                Circle().foregroundColor(.primary)
+                                    .opacity(player.folded ? 0.60 : 0.00)
                             })
                             Text("\(player.chips)")
+                                .foregroundColor(.primary)
                             Spacer().frame(width: 20, height: 10)
                             if(player.bigBlind){
                                 Image(systemName: "b.circle.fill")
                                     .resizable()
                                     .frame(width: 20, height: 20, alignment: .trailing)
+                                    .foregroundColor(.primary)
                             }else if(player.littleBlind){
                                 Image(systemName: "b.circle")
                                     .resizable()
                                     .frame(width: 20, height: 20, alignment: .trailing)
                                     .scaledToFit()
+                                    .foregroundColor(.primary)
                             }else{
                                 Image(systemName: "b.circle")
                                     .resizable()
                                     .frame(width: 20, height: 20, alignment: .trailing)
                                     .scaledToFit()
                                     .hidden()
+                                    .foregroundColor(.primary)
                             }
                                                 
                         }
@@ -91,8 +100,11 @@ struct PlayerView: View {
             }
         }
         .foregroundColor(player.folded ? .gray : .black)
-        .shadow(color: player.acting ? .red : .clear, radius: 5, x: 0, y: 0)
-        .animation(.easeOut, value: player.acting)
+        .overlay(
+        RoundedRectangle(cornerRadius: 5)
+            .stroke(player.acting ? .green : .clear, lineWidth: 4)
+            .animation(.easeInOut.repeatForever(), value: player.acting))
+        
     
         
     }

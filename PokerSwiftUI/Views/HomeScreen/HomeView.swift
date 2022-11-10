@@ -12,71 +12,105 @@ struct HomeView: View {
     @EnvironmentObject var tableModel: TableModel
     @State private var code: String = ""
     @State private var name: String = ""
-
+    
     @State private var nameValid = false
+    @State private var hostToggled = false
+    @State var isAnimating = false // <1>
     
     @State private var invalidFeedback: String = ""
     
     var body: some View {
         NavigationView {
-            VStack(alignment: .center) {
-                //The Title
-                Text("PokerChips")
-                    .bold()
-                    .font(.largeTitle)
+            ZStack {
+                Image("placeholdertable")
+                    .resizable()
                 
                 
-                //The Name Field
-                TextField("Your Silly Little Name", text: $name, onEditingChanged: { isEditing in
-                    if !isEditing {
-                        nameValid = nameValidator()
-                    }})
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .border(.secondary)
-                    .limitInputLength(value: $name, length: 16)
                 
-                //The Room Code Field
-                TextField("Room Code", text: $code, onEditingChanged: { isEditing in
-                    if !isEditing {
-                        codeValidator()
-                    }})
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .border(.secondary)
-                    .limitInputLength(value: $code, length: 4)
+                VStack(alignment: .center) {
+                    //The Title
+                    Text("PokerChips")
+                        .bold()
+                        .font(.largeTitle)
                     
-                
-                //Lets you join or host room
-                NavigationLink(isActive: $tableModel.hosting) {
-                    TableHost()
-                } label: { EmptyView() }
-                
-                NavigationLink(isActive: $tableModel.joining) {
-                    TableHost()
-                } label: { EmptyView() }
-                
-                
-                //Buttons
-                HStack(alignment: .center, spacing: 10) {
-                    HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
-                    HostButton(pressed: joinPressed, valid: nameValid && tableModel.exists, text: "Join")
-                }
+                    //The Name Field
+                    TextField("Your Silly Little Name", text: $name, onEditingChanged: { isEditing in
+                        if !isEditing || isEditing {
+                            nameValid = nameValidator()
+                        }})
+                    .offset(x:10)
+                    .frame(height: 50)
+                    .background(.thickMaterial)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+                    .zIndex(1)
+                    
+                    
+                    HStack {
+                    //The Room Code Field
+                        TextField("Room Code", text: $code, onEditingChanged: { isEditing in
+                            if !isEditing {
+                                codeValidator()
+                            }})
+                    .offset(x: 10)
+                    .foregroundColor(hostToggled ? .clear : .black)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+                    .disabled(hostToggled)
+                    
+                        Divider()
+                            .offset(x : -20)
+                        
+                    Toggle(isOn: $hostToggled) {
+                        Text("Hosting?")
+                    }
+                    .offset(x: -10)
+                    }
+                    .frame(height: 50)
+                    .background(.thickMaterial)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    
+                    //Lets you join or host room
+                    NavigationLink(isActive: $tableModel.hosting) {
+                        TableHost()
+                    } label: { EmptyView() }
+                    
+                    NavigationLink(isActive: $tableModel.joining) {
+                        TableHost()
+                    } label: { EmptyView() }
+                    
+                    HStack(alignment: .center) {
+                        HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
+                            .padding()
+                        HostButton(pressed: joinPressed, valid: nameValid && tableModel.exists, text: "Join")
+                            .padding()
+                    }
+                    
+                    //.background(.blue)
+                    
+
+                    
+                    
+                    //Buttons
+                    
                     
                     //TODO: Use an internal codeValid state in combination with .exists and nameValid?
                     //That way we can wait for .exists and even maybe add a loading indicator
-                
-                //Invalid feedback
-                Text(tableModel.exists ? "" : invalidFeedback)
-                    .foregroundColor(tableModel.exists ? .green : .red)
-                    .animation(.spring().delay(0.2), value: tableModel.exists)
-                    .frame(width: 200)
-                    .animation(.spring().speed(10), value: invalidFeedback)
-              
-                
-                
-                Spacer()
-            }.padding()
+                    
+                    //Invalid feedback
+                    Text(tableModel.exists ? "" : invalidFeedback)
+                        .foregroundColor(tableModel.exists ? .green : .red)
+                        .animation(.spring().delay(0.2), value: tableModel.exists)
+                        .frame(width: 200)
+                        .animation(.spring().speed(10), value: invalidFeedback)
+                    
+                    
+                    
+                }
+            }
         }
     }
     
@@ -132,29 +166,12 @@ struct HomeView: View {
     }
     
 }
+     
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(TableModel())
-    }
-}
-
-
-struct TextFieldLimitModifer: ViewModifier {
-    @Binding var value: String
-    var length: Int
-
-    func body(content: Content) -> some View {
-        content
-            .onReceive(value.publisher.collect()) {
-                value = String($0.prefix(length))
-            }
-    }
-}
-
-extension View {
-    func limitInputLength(value: Binding<String>, length: Int) -> some View {
-        self.modifier(TextFieldLimitModifer(value: value, length: length))
+            .previewInterfaceOrientation(.portrait)
     }
 }

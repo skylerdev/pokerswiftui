@@ -89,6 +89,7 @@ struct BetControls: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    .padding(.leading, 30)
                 }
                 
             }
@@ -106,10 +107,13 @@ struct BetControls: View {
                         curBet = curBet <= minBet ? minBet : curBet
                         tableModel.bet(amount: Int(curBet))
                     }.padding()
+                        .padding(.trailing, 10)
                     Button("Fold") {
                         print("Fold Pressed")
                         tableModel.fold()
                     }
+                    .buttonStyle(.borderedProminent)
+                    .padding(.trailing, 10)
                 } else {
                     Button("Bet") {
                         print("Bet Pressed")
@@ -125,7 +129,7 @@ struct BetControls: View {
                 
                 
             }
-        }.background(.ultraThickMaterial)
+        }.background(.regularMaterial)
             .foregroundColor(controlsEnabled ? .accentColor : .gray)
             .disabled(!controlsEnabled)
             

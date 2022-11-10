@@ -11,19 +11,21 @@ struct HostButton: View {
     var pressed: () -> Void
     var valid: Bool
     var text: String
+    let shadowcolor = Color(.sRGBLinear, white: 0, opacity: 0.5)
     
     var body: some View {
         Button {
             pressed()
         } label: {
             Text(text)
-                .foregroundColor(.accentColor)
+                .foregroundColor(valid ? .green : .red)
+                .animation(.easeInOut, value: valid)
         }
-        .padding(valid ? 30 : 10)
-        .background(valid ? .green : .red )
-        .opacity(valid ? 1 : 0.15)
+        .padding()
+        .background(.regularMaterial)
         .cornerRadius(10)
-        .animation(.spring(), value: valid)
+        .shadow(color: shadowcolor, radius: valid ? 2 : 0, x: valid ? 2 : 0, y: valid ? 2 : 0)
+        .animation(.easeInOut, value: valid)
         .disabled(!valid)
     }
 }

@@ -16,6 +16,19 @@ struct Card: Codable {
         return("\(rank) of \(suit.rawValue)s")
     }
     
+    func toIcon() -> String {
+        switch suit {
+        case .spade:
+            return "♠"
+        case .heart:
+            return "♥"
+        case .club:
+            return "♣"
+        case .diamond:
+            return "♦"
+        }
+    }
+    
 }
 
 
@@ -25,6 +38,7 @@ enum Suit: String, Codable, CaseIterable {
     club,
     spade
 }
+
 
 enum Rank: String, Codable,  CaseIterable {
     case ace = "A",
