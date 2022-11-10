@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Card: Codable {
+struct Card: Codable, Hashable {
     
     var suit: Suit
     var rank: Rank

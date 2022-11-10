@@ -14,7 +14,6 @@ struct HomeView: View {
     @State private var name: String = ""
     
     @State private var nameValid = false
-    @State private var hostToggled = false
     @State var isAnimating = false // <1>
     
     @State private var invalidFeedback: String = ""
@@ -55,17 +54,12 @@ struct HomeView: View {
                                 codeValidator()
                             }})
                     .offset(x: 10)
-                    .foregroundColor(hostToggled ? .clear : .black)
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
-                    .disabled(hostToggled)
                     
-                        Divider()
-                            .offset(x : -20)
+                       
                         
-                    Toggle(isOn: $hostToggled) {
-                        Text("Hosting?")
-                    }
+
                     .offset(x: -10)
                     }
                     .frame(height: 50)
