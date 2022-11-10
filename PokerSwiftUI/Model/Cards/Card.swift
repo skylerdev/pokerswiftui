@@ -7,26 +7,26 @@
 
 import Foundation
 
-struct Card {
+struct Card: Codable {
     
     var suit: Suit
     var rank: Rank
     
     func toString() -> String {
-        return("\(rank) of \(suit.rawValue)")
+        return("\(rank) of \(suit.rawValue)s")
     }
     
 }
 
 
-enum Suit: String, CaseIterable {
+enum Suit: String, Codable, CaseIterable {
     case heart,
     diamond,
     club,
     spade
 }
 
-enum Rank: String, CaseIterable {
+enum Rank: String, Codable,  CaseIterable {
     case ace = "A",
          two = "2",
          three = "3",
