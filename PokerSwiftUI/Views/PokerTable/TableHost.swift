@@ -44,8 +44,7 @@ struct TableHost: View {
                         }
                         switch tableModel.game.phase {
                         case .preflop:
-                            TableCardsView(card1: Card(suit: .club, rank: .nine), card2: Card(suit: .spade, rank: .king)
-                                           , card3: Card(suit: .heart, rank: .two), card4: Card(suit: .spade, rank: .queen), card5: Card(suit: .diamond, rank: .ten), stage: .flop)
+                            TableCardsView(cards: [], stage: .flop)
                             .scaleEffect(x:0.8, y:0.8)
                             .padding(.bottom, -100)
                             .padding(.top, 20)
