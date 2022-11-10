@@ -24,36 +24,45 @@ struct TableHost: View {
                 
                 //EVERYTHING ELSE
                 VStack {
-                    if(tableModel.hosting && !tableModel.game.beingPlayed && tableModel.players.count >= 2 ){
-                        StartButton {
-                            print("Pressed start")
-                            tableModel.startGame()
-                        }
-                    }
                     HStack {
                         VStack(alignment: .leading) {
                             
                             Text(tableModel.tableId)
                             
                             Text(tableModel.feedback)
-                            Text("pot: \(tableModel.game.pot)")
+                            HStack {
+                                Text("pot: \(tableModel.game.pot)")
+                                if(tableModel.hosting && !tableModel.game.beingPlayed && tableModel.players.count >= 2 ){
+                                    StartButton {
+                                        print("Pressed start")
+                                        tableModel.startGame()
+                                    }
+                                }
+                                
+                            }
                             
                             ForEach(tableModel.players) { p in
                                 PlayerView(player: p)
                             }.padding()
                         }
+
+                        .offset(y: -75)
                         switch tableModel.game.phase {
                         case .preflop:
-                            TableCardsView(cards: [], stage: .flop)
-                            .scaleEffect(x:0.8, y:0.8)
-                            .padding(.bottom, -100)
-                            .padding(.top, 20)
+                            TableCardsView(cards: Array())                            .scaleEffect(x:0.8, y:0.8)
+                            .padding(.vertical, 20)
                         case .flop:
-                            Text("Flop")
+                            TableCardsView(cards: Array(tableModel.game.cards[0...2]))
+                            .scaleEffect(x:0.8, y:0.8)
+                            .padding(.vertical, 20)
                         case .river:
-                            Text("River")
+                            TableCardsView(cards: Array(tableModel.game.cards[0...3]))
+                            .scaleEffect(x:0.8, y:0.8)
+                            .padding(.vertical, 20)
                         case.turn:
-                            Text("Turn")
+                            TableCardsView(cards: Array(tableModel.game.cards[0...4]))
+                            .scaleEffect(x:0.8, y:0.8)
+                            .padding(.vertical, 20)
                         }
                     }
                     Spacer()

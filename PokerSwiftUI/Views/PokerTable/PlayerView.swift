@@ -103,7 +103,8 @@ struct PlayerView: View {
         .overlay(
         RoundedRectangle(cornerRadius: 5)
             .stroke(player.acting ? .green : .clear, lineWidth: 4)
-            .animation(.easeInOut.repeatForever(), value: player.acting))
+//            .animation(.easeInOut.repeatForever(), value: player.acting))
+        )
         .padding(.trailing, -20)
         
     
