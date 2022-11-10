@@ -104,6 +104,7 @@ struct PlayerView: View {
         RoundedRectangle(cornerRadius: 5)
             .stroke(player.acting ? .green : .clear, lineWidth: 4)
             .animation(.easeInOut.repeatForever(), value: player.acting))
+        .padding(.trailing, -20)
         
     
         
