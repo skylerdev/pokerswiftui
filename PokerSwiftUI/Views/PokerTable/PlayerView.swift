@@ -91,7 +91,9 @@ struct PlayerView: View {
             }
         }
         .foregroundColor(player.folded ? .gray : .black)
-        .shadow(color: player.acting ? .red : .clear, radius: 5, x: 0, y: 0)
+        .overlay(
+        RoundedRectangle(cornerRadius: 5)
+            .stroke(player.acting ? .green : .clear, lineWidth: 4))
         .animation(.easeOut, value: player.acting)
     
         

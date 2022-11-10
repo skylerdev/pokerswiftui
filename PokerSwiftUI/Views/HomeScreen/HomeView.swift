@@ -35,7 +35,7 @@ struct HomeView: View {
                     
                     //The Name Field
                     TextField("Your Silly Little Name", text: $name, onEditingChanged: { isEditing in
-                        if !isEditing {
+                        if !isEditing || isEditing {
                             nameValid = nameValidator()
                         }})
                     .offset(x:10)
@@ -50,10 +50,10 @@ struct HomeView: View {
                     
                     HStack {
                     //The Room Code Field
-                        TextField(hostToggled ? "" : "Room Code", text: $code, onEditingChanged: { isEditing in
-                        if !isEditing {
-                            codeValidator(input: code)
-                        }})
+                        TextField("Room Code", text: $code, onEditingChanged: { isEditing in
+                            if !isEditing {
+                                codeValidator()
+                            }})
                     .offset(x: 10)
                     .foregroundColor(hostToggled ? .clear : .black)
                     .textInputAutocapitalization(.never)
@@ -73,6 +73,14 @@ struct HomeView: View {
                     .cornerRadius(10)
                     .padding(.horizontal)
                     
+                    //Lets you join or host room
+                    NavigationLink(isActive: $tableModel.hosting) {
+                        TableHost()
+                    } label: { EmptyView() }
+                    
+                    NavigationLink(isActive: $tableModel.joining) {
+                        TableHost()
+                    } label: { EmptyView() }
                     
                     HStack(alignment: .center) {
                         HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
@@ -83,14 +91,7 @@ struct HomeView: View {
                     
                     //.background(.blue)
                     
-                    //Lets you join or host room
-                    NavigationLink(isActive: $tableModel.hosting) {
-                        TableHost()
-                    } label: { EmptyView() }
-                    
-                    NavigationLink(isActive: $tableModel.joining) {
-                        TableHost()
-                    } label: { EmptyView() }
+
                     
                     
                     //Buttons
@@ -108,7 +109,6 @@ struct HomeView: View {
                     
                     
                     
-                    Spacer()
                 }
             }
         }
@@ -118,9 +118,6 @@ struct HomeView: View {
         if(name.isEmpty){
             return false
         }
-        if(name.count > 15){
-            return false
-        }
         //TODO: alphanumeric check here please
         tableModel.myName = name
         
@@ -128,7 +125,8 @@ struct HomeView: View {
     }
     
     func joinPressed() {
-        print("tried to join")
+        print("joinPressed: setting model to entered code \(code)")
+        tableModel.tableId = code
         if(tableModel.exists){
             invalidFeedback = "Trying To Join..."
             print("joining game \(tableModel.tableId)")
@@ -145,22 +143,22 @@ struct HomeView: View {
         invalidFeedback = "Trying To Host..."
         tableModel.dataInitCallback = {
             tableModel.hosting = true
+            
         }
         tableModel.hostGame()
-        
+       
     }
     
-    func codeValidator(input: String) {
-        tableModel.tableId = input.lowercased()
+    func codeValidator() {
         tableModel.exists = false
         if(code.isEmpty){
-            invalidFeedback = "Empty"
+            invalidFeedback = "Invalid"
         }else if(code.count != 4){
-            invalidFeedback = "Not 4 chars"
+            invalidFeedback = "Invalid"
         }else{
             invalidFeedback = "Checking..."
             //code is valid, actually check db now
-            tableModel.gameExists(gameID: code){
+            tableModel.gameExists(gameID: code) {
                 invalidFeedback = tableModel.exists ? "Exists" : "Game does not exist"
             }
             
@@ -168,6 +166,7 @@ struct HomeView: View {
     }
     
 }
+     
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {

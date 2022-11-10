@@ -42,7 +42,10 @@ struct TableHost: View {
                         }
                         switch tableModel.game.phase {
                         case .preflop:
-                            Text("Preflop")
+                            TableCardsView(card1: Card(suit: .club, rank: .nine), card2: Card(suit: .spade, rank: .king)
+                                           , card3: Card(suit: .heart, rank: .two), card4: Card(suit: .spade, rank: .queen), card5: Card(suit: .diamond, rank: .ten), stage: .flop)
+                            .scaleEffect(x:0.8, y:0.8)
+                            .padding(.bottom, -100)
                         case .flop:
                             Text("Flop")
                         case .river:
@@ -54,8 +57,8 @@ struct TableHost: View {
                     Spacer()
                     VStack(alignment: .leading) {
                         YourCardsView(card1: Card(suit: .club, rank: .ace), card2: Card(suit: .diamond, rank: .ace))
-                            .padding(.horizontal, 20)
-                            .offset(y:10)
+                            .padding(.leading, 80)
+                            .padding(.bottom, -40)
 
                         BetControls(controlsEnabled: tableModel.me!.acting)
                             .blur(radius: tableModel.me!.acting ? 0 : 4)

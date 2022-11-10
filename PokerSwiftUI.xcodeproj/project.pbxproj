@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4955C59A291C9402000BECC8 /* TableCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4955C599291C9402000BECC8 /* TableCardsView.swift */; };
 		5D082CDD28090A2A0050814A /* TableHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CDC28090A2A0050814A /* TableHost.swift */; };
 		5D082CDF28090B9B0050814A /* YourCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CDE28090B9B0050814A /* YourCardsView.swift */; };
 		5D082CE3280917DE0050814A /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D082CE2280917DE0050814A /* Card.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4955C599291C9402000BECC8 /* TableCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCardsView.swift; sourceTree = "<group>"; };
 		5D082CDC28090A2A0050814A /* TableHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHost.swift; sourceTree = "<group>"; };
 		5D082CDE28090B9B0050814A /* YourCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourCardsView.swift; sourceTree = "<group>"; };
 		5D082CE2280917DE0050814A /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				5D082CDE28090B9B0050814A /* YourCardsView.swift */,
+				4955C599291C9402000BECC8 /* TableCardsView.swift */,
 				5D082CE42809F1E50050814A /* CardView.swift */,
 			);
 			path = Cards;
@@ -289,6 +292,7 @@
 				5D082CF0280A13820050814A /* PlayerView.swift in Sources */,
 				5D5DD712281367530003C9A4 /* StartButton.swift in Sources */,
 				5D082CFB280A2AF10050814A /* BetControls.swift in Sources */,
+				4955C59A291C9402000BECC8 /* TableCardsView.swift in Sources */,
 				5D082CE3280917DE0050814A /* Card.swift in Sources */,
 				5D082CF7280A17490050814A /* Player.swift in Sources */,
 				5D082CDD28090A2A0050814A /* TableHost.swift in Sources */,

@@ -18,21 +18,24 @@ struct CardView: View {
                 Text(card.rank.rawValue)
                     .bold()
                     .font(.body)
-                    .dynamicTypeSize(.accessibility1)
-                    .padding(.horizontal, 3)
+                    .dynamicTypeSize(.accessibility4)
+                    .padding(.horizontal, 6)
             }
             
             Text(card.toIcon())
-                .font(.custom("Courier", size: 100))
+                .font(.custom("Courier", size: 200))
                 .opacity(0.40)
-                .offset(x: 10, y: -25)
+                .offset(x: 20, y: -50)
         }
         .foregroundColor(
             card.suit == .heart || card.suit == .diamond ? .red : .black
         )
-        .frame(width: 50, height: 70, alignment: .topLeading)
+        .frame(width: 100, height: 140, alignment: .topLeading)
         .background(.ultraThickMaterial)
-        .cornerRadius(4)
+        .cornerRadius(8)
+        .overlay(RoundedRectangle(cornerRadius: 8)
+            .stroke(.gray, lineWidth: 1)
+            .opacity(0.4))
         
     }
 }
