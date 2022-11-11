@@ -55,11 +55,11 @@ struct TableHost: View {
                             TableCardsView(cards: Array(tableModel.game.cards[0...2]))
                             .scaleEffect(x:0.8, y:0.8)
                             .padding(.vertical, 20)
-                        case .river:
+                        case .turn:
                             TableCardsView(cards: Array(tableModel.game.cards[0...3]))
                             .scaleEffect(x:0.8, y:0.8)
                             .padding(.vertical, 20)
-                        case.turn:
+                        case.river:
                             TableCardsView(cards: Array(tableModel.game.cards[0...4]))
                             .scaleEffect(x:0.8, y:0.8)
                             .padding(.vertical, 20)
