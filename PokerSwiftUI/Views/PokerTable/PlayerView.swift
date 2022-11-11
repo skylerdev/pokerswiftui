@@ -16,30 +16,36 @@ struct PlayerView: View {
         
         ZStack {
             MiniCardView(cards: player.cards)
-                .offset(y:-45)
+                .offset(x:78, y:3)
+                .padding(.trailing, -40)
+            
+            
             
             //MARK: - Current Bet for Player
-            VStack {
-                HStack {
-                    
-                    Text("Bets:")
-                        .foregroundColor(.primary)
-                    
-                    Text("\(player.currentBet)").bold()
-                        .foregroundColor(.primary)
-                    
-                    
+                VStack {
+                    HStack {
+                        
+                        Text("Bets:")
+                            .foregroundColor(.primary)
+                        
+                        Text("\(player.currentBet)").bold()
+                            .foregroundColor(.primary)
+                        
+                        
+                        
+                    }
+                    .padding(.top, 10)
                     
                 }
-                .padding(.top, 10)
                 
-            }
+                .padding(10)
+                .background(.ultraThinMaterial)
+                .cornerRadius(10)
+                .offset(y: player.currentBet != 0 ? 50 : 0)
+                .animation(.spring(), value: player.currentBet)
+                
+
             
-            .padding(10)
-            .background(.ultraThinMaterial)
-            .cornerRadius(10)
-            .offset(y: player.currentBet != 0 ? 50 : 0)
-            .animation(.spring(), value: player.currentBet)
             
             
             
@@ -68,38 +74,38 @@ struct PlayerView: View {
                             Text("\(player.chips)")
                                 .foregroundColor(.primary)
                             Spacer().frame(width: 20, height: 10)
-                            if(player.bigBlind){
-                                Image(systemName: "b.circle.fill")
-                                    .resizable()
-                                    .frame(width: 20, height: 20, alignment: .trailing)
-                                    .foregroundColor(.primary)
-                            }else if(player.littleBlind){
-                                Image(systemName: "b.circle")
-                                    .resizable()
-                                    .frame(width: 20, height: 20, alignment: .trailing)
-                                    .scaledToFit()
-                                    .foregroundColor(.primary)
-                            }else{
-                                Image(systemName: "b.circle")
-                                    .resizable()
-                                    .frame(width: 20, height: 20, alignment: .trailing)
-                                    .scaledToFit()
-                                    .hidden()
-                                    .foregroundColor(.primary)
-                            }
+                           
                             
                         }
                         
                     }
                     
                     .padding()
-                    
+                    .frame(width: 160)
                     .background(.ultraThickMaterial)
+
                     .background(player.hasActed ? .gray : .mint)
                     //coloring for has bet
                     .background(player.folded ? .gray : .clear)
                     .cornerRadius(10)
                 }
+            
+            if(player.bigBlind){
+                Image(systemName: "b.circle.fill")
+                    .offset(x:60, y:20)
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.primary)
+            }else if(player.littleBlind){
+                Image(systemName: "b.circle")
+                    .offset(x:60, y:20)
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.primary)
+            }else{
+                Image(systemName: "b.circle")
+                    .frame(width: 20, height: 20)
+                    .hidden()
+                    .foregroundColor(.primary)
+            }
                 
             }
             .foregroundColor(player.folded ? .gray : .black)
@@ -108,8 +114,10 @@ struct PlayerView: View {
                     .stroke(player.acting ? .green : .clear, lineWidth: 4)
                 //            .animation(.easeInOut.repeatForever(), value: player.acting))
             )
-            .frame(minWidth: 200)
+            .frame(width: 160)
             .padding(.trailing, -20)
+        
+
     
         
     }

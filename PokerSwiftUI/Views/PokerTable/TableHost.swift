@@ -51,6 +51,7 @@ struct TableHost: View {
                             }.padding()
                                 .padding(.leading, 10)
                         }
+                        .zIndex(1)
 
                         .offset(y: -75)
                         Spacer()

@@ -11,20 +11,24 @@ struct MiniCardView: View {
     var cards: [Card]
     
     var body: some View {
-        HStack {
-            Text(cards[0].rank.rawValue + cards[0].toIcon())
-                .padding(.vertical, 2)
-                .frame(minWidth: 40)
-                .padding(.bottom, 20)
-                .background(.thinMaterial)
-                .cornerRadius(2)
-            Text(cards[1].rank.rawValue + cards[1].toIcon())
-                .padding(.vertical, 2)
-                .frame(minWidth: 40)
-                .padding(.bottom, 20)
-                .background(.thinMaterial)
-                .cornerRadius(2)
+        VStack (alignment: .trailing) {
+            ForEach(cards, id: \.self){ card in
+                Text(card.rank.rawValue + card.toIcon() + " ")
+                    .padding(.vertical, 3)
+                    .padding(.leading, 50)
+                    .background(.thickMaterial)
+                    .cornerRadius(4)
+
+                
+                    .foregroundColor(card.suit == .heart || card.suit == .diamond ? .red : .primary)
+                    .padding(.bottom, -4)
+                    .padding(.leading, -40)
+                    
+            }
+            
+
         }
+        .padding(.top, -10)
     }
 }
 
