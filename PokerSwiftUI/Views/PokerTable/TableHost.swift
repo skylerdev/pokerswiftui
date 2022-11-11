@@ -68,14 +68,16 @@ struct TableHost: View {
                     }
                     Spacer()
                     VStack(alignment: .leading) {
-                        YourCardsView(card1: Card(suit: .club, rank: .ace), card2: Card(suit: .diamond, rank: .ace))
-                            .padding(.leading, 80)
-                            .padding(.bottom, -40)
-
+                      
+                            YourCardsView(card1: tableModel.me!.cards[0], card2:    tableModel.me!.cards[1])
+                                .padding(.leading, 80)
+                                .padding(.bottom, -40)
+                        
 
                         BetControls(controlsEnabled: tableModel.me!.acting)
                             .blur(radius: tableModel.me!.acting ? 0 : 4)
                             .animation(.easeInOut, value: tableModel.me!.acting)
+                            
                             
                     }
                     .padding(.top, -200)
