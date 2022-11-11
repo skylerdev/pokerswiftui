@@ -103,7 +103,7 @@ class TableModel: ObservableObject {
             
             game.beingPlayed = true
             game.pot = 1200
-            game.phase = .preflop
+            game.phase = .river
             self.tableId = "zzzz"
 
         }

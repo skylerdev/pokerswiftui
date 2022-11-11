@@ -25,6 +25,7 @@ struct TableHost: View {
                 //EVERYTHING ELSE
                 VStack {
                     HStack {
+                        Spacer()
                         VStack(alignment: .leading) {
                             
                             Text(tableModel.tableId)
