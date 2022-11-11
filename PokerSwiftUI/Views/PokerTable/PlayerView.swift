@@ -13,15 +13,15 @@ struct PlayerView: View {
     
     
     var body: some View {
-        
-        ZStack {
+        HStack {
             MiniCardView(cards: player.cards)
-                .offset(x:78, y:3)
-                .padding(.trailing, -40)
-            
-            
-            
-            //MARK: - Current Bet for Player
+                .padding(.leading, -60)
+            ZStack {
+                
+                
+                
+                
+                //MARK: - Current Bet for Player
                 VStack {
                     HStack {
                         
@@ -44,16 +44,16 @@ struct PlayerView: View {
                 .offset(y: player.currentBet != 0 ? 50 : 0)
                 .animation(.spring(), value: player.currentBet)
                 
-
-            
-            
-            
-            
-            
-            
-            
-            
-            //MARK: Main Player View
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                //MARK: Main Player View
                 VStack {
                     VStack(alignment: .leading, spacing: 3) {
                         
@@ -73,39 +73,38 @@ struct PlayerView: View {
                                 })
                             Text("\(player.chips)")
                                 .foregroundColor(.primary)
-                            Spacer().frame(width: 20, height: 10)
-                           
-                            
+                            Spacer()
                         }
                         
                     }
                     
                     .padding()
-                    .frame(width: 160)
+                    .frame(width: 151)
                     .background(.ultraThickMaterial)
 
+                    
                     .background(player.hasActed ? .gray : .mint)
                     //coloring for has bet
                     .background(player.folded ? .gray : .clear)
                     .cornerRadius(10)
                 }
-            
-            if(player.bigBlind){
-                Image(systemName: "b.circle.fill")
-                    .offset(x:60, y:20)
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(.primary)
-            }else if(player.littleBlind){
-                Image(systemName: "b.circle")
-                    .offset(x:60, y:20)
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(.primary)
-            }else{
-                Image(systemName: "b.circle")
-                    .frame(width: 20, height: 20)
-                    .hidden()
-                    .foregroundColor(.primary)
-            }
+                
+                if(player.bigBlind){
+                    Image(systemName: "b.circle.fill")
+                        .offset(x:60, y:20)
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(.primary)
+                }else if(player.littleBlind){
+                    Image(systemName: "b.circle")
+                        .offset(x:60, y:20)
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(.primary)
+                }else{
+                    Image(systemName: "b.circle")
+                        .frame(width: 20, height: 20)
+                        .hidden()
+                        .foregroundColor(.primary)
+                }
                 
             }
             .foregroundColor(player.folded ? .gray : .black)
@@ -114,11 +113,10 @@ struct PlayerView: View {
                     .stroke(player.acting ? .green : .clear, lineWidth: 4)
                 //            .animation(.easeInOut.repeatForever(), value: player.acting))
             )
-            .frame(width: 160)
             .padding(.trailing, -20)
-        
-
-    
+            
+            
+        }
         
     }
 }
