@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CardView: View {
     var card: Card
-    var x = true
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -43,7 +42,7 @@ struct CardView: View {
         .foregroundColor(
             card.suit == .heart || card.suit == .diamond ? .red : .primary
         )
-        //.frame(width: 100, height: 140, alignment: .topLeading)
+        .frame(width: 100, height: 140, alignment: .topLeading)
         .background(.ultraThickMaterial)
         .cornerRadius(8)
         .overlay(RoundedRectangle(cornerRadius: 8)

@@ -18,13 +18,17 @@ struct HostButton: View {
             pressed()
         } label: {
             Text(text)
-                .foregroundColor(valid ? .green : .red)
+                .foregroundColor(valid ? .accentColor : .secondary)
                 .animation(.easeInOut, value: valid)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 5)
         }
-        .padding()
-        .background(.regularMaterial)
-        .cornerRadius(10)
-        .shadow(color: shadowcolor, radius: valid ? 2 : 0, x: valid ? 2 : 0, y: valid ? 2 : 0)
+        .buttonStyle(.bordered)
+        .padding(.vertical)
+//        .padding()
+//        .background(.regularMaterial)
+//        .cornerRadius(10)
+//        .shadow(color: shadowcolor, radius: valid ? 2 : 0, x: valid ? 2 : 0, y: valid ? 2 : 0)
         .animation(.easeInOut, value: valid)
         .disabled(!valid)
     }

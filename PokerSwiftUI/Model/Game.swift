@@ -29,7 +29,7 @@ struct Game: Codable {
     //what the min bet is
     var minBet: Int = 20
     
-    var cards: [Card] = [Card(suit: .heart, rank: .two)]
+    var cards: [Card] = [Card(suit: .heart, rank: .two), Card(suit: .heart, rank: .two), Card(suit: .heart, rank: .two), Card(suit: .heart, rank: .two), Card(suit: .heart, rank: .two)]
     
 }
 

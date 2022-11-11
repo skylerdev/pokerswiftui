@@ -78,9 +78,11 @@ struct HomeView: View {
                     
                     HStack(alignment: .center) {
                         HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
-                            .padding()
+                            .padding(.horizontal)
+                            .padding(.trailing, -10)
                         HostButton(pressed: joinPressed, valid: nameValid && tableModel.exists, text: "Join")
-                            .padding()
+                            .padding(.horizontal)
+                            .padding(.leading, -10)
                     }
                     
                     //.background(.blue)

@@ -107,12 +107,13 @@ struct BetControls: View {
                         curBet = curBet <= minBet ? minBet : curBet
                         tableModel.bet(amount: Int(curBet))
                     }.padding()
+                        .buttonStyle(.bordered)
                         .padding(.trailing, 10)
                     Button("Fold") {
                         print("Fold Pressed")
                         tableModel.fold()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .padding(.trailing, 10)
                 } else {
                     Button("Bet") {
