@@ -72,6 +72,7 @@ struct TableHost: View {
                             YourCardsView(card1: tableModel.me!.cards[0], card2:    tableModel.me!.cards[1])
                                 .padding(.leading, 80)
                                 .padding(.bottom, -40)
+                                .opacity(tableModel.game.beingPlayed ? 1 : 0 )
                         
 
                         BetControls(controlsEnabled: tableModel.me!.acting)
