@@ -48,6 +48,7 @@ struct PlayerView: View {
             //MARK: Main Player View
             VStack {
                 VStack(alignment: .leading, spacing: 3) {
+                    MiniCardView(cards: player.cards)
                     Text(player.name)
                         .bold()
                         .foregroundColor(.primary)
@@ -90,11 +91,13 @@ struct PlayerView: View {
                 }
                 
                 .padding()
+                
                 .background(.ultraThickMaterial)
                 .background(player.hasActed ? .gray : .mint)
                 //coloring for has bet
                 .background(player.folded ? .gray : .clear)
                 .cornerRadius(10)
+                
                 
                 
             }
@@ -105,6 +108,7 @@ struct PlayerView: View {
             .stroke(player.acting ? .green : .clear, lineWidth: 4)
 //            .animation(.easeInOut.repeatForever(), value: player.acting))
         )
+        .frame(minWidth: 200)
         .padding(.trailing, -20)
         
     
