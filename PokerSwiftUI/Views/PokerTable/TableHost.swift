@@ -18,7 +18,7 @@ struct TableHost: View {
                 //BACKGROUND CIRCLE
                 Circle()
                     .scale(y: 3)
-                    .offset(x: 180, y: 9)
+                    .offset(x: 180, y: -20)
                     .foregroundColor(.green)
                     .opacity(colorScheme == .dark ? 0.4 : 1)
                 
@@ -47,6 +47,7 @@ struct TableHost: View {
                         }
 
                         .offset(y: -75)
+                        Spacer()
                         switch tableModel.game.phase {
                         case .preflop:
                             TableCardsView(cards: Array())                            .scaleEffect(x:0.8, y:0.8)
