@@ -13,6 +13,13 @@ import FirebaseDatabase
 struct PokerSwiftUIApp: App {
     init() {
         FirebaseApp.configure()
+        Auth.auth().signInAnonymously { (authResult, error) in
+            guard (authResult?.user) != nil else {
+                print("DID NOT sign in we CANNOT use the app")
+                return
+            }
+            print("we signed in :)")
+        }
     }
     
     var body: some Scene {
