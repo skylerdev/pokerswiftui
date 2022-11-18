@@ -106,14 +106,13 @@ struct BetControls: View {
                         //get biggest amt currently bet in the table. use it
                         curBet = curBet <= minBet ? minBet : curBet
                         tableModel.bet(amount: Int(curBet))
-                    }.padding()
-                        .buttonStyle(.bordered)
-                        .padding(.trailing, 10)
+                    }
+
+                    Divider()
                     Button("Fold") {
                         print("Fold Pressed")
                         tableModel.fold()
                     }
-                    .buttonStyle(.bordered)
                     .padding(.trailing, 10)
                 } else {
                     Button("Bet") {

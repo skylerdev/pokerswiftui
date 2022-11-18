@@ -25,18 +25,23 @@ struct TableHost: View {
                 //EVERYTHING ELSE
                 VStack {
                     HStack {
+                        Spacer()
                         VStack(alignment: .leading) {
                             
                             Text(tableModel.tableId)
+                                .padding(.leading, 30)
                             
                             Text(tableModel.feedback)
+                                .padding(.leading, 30)
                             HStack {
                                 Text("pot: \(tableModel.game.pot)")
+                                    .padding(.leading, 30)
                                 if(tableModel.hosting && !tableModel.game.beingPlayed && tableModel.players.count >= 2 ){
                                     StartButton {
                                         print("Pressed start")
                                         tableModel.startGame()
                                     }
+                                    .padding(.leading, 30)
                                 }
                                 
                             }
@@ -44,7 +49,9 @@ struct TableHost: View {
                             ForEach(tableModel.players) { p in
                                 PlayerView(player: p)
                             }.padding()
+                                .padding(.leading, 10)
                         }
+                        .zIndex(1)
 
                         .offset(y: -75)
                         Spacer()

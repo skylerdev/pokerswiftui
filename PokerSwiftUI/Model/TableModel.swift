@@ -98,12 +98,12 @@ class TableModel: ObservableObject {
             players.append(Player(id: "DemoPlayer", name: "DemoPlayer", chips: 1000, totalRoundBet: 0, currentBet: 50, bigBlind: false, acting: false, hasActed: true, folded: false))
             players.append(Player(id: "meplayer", name: "Skyler", chips: 5000, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: true, hasActed: false, folded: false))
             players.append(Player(id: "andy", name: "Andy B", chips: 50, totalRoundBet: 0, currentBet: 0, bigBlind: false, acting: false, hasActed: false, folded: true))
-            players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, acting: false, hasActed: true, folded: false))
+            players.append(Player(id: "duncy", name: "Duncan", chips: 999999, totalRoundBet: 0, currentBet: 1000, bigBlind: true, acting: false, hasActed: true, folded: false, cards: [Card(suit: .spade, rank: .ten), Card(suit: .diamond, rank: .king)]))
             myPlayerId = "meplayer"
             
             game.beingPlayed = true
             game.pot = 1200
-            game.phase = .preflop
+            game.phase = .river
             self.tableId = "zzzz"
 
         }
