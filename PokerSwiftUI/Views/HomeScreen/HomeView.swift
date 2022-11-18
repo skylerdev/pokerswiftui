@@ -16,7 +16,12 @@ struct HomeView: View {
     @State private var nameValid = false
     @State var isAnimating = false // <1>
     
-    @State private var invalidFeedback: String = ""
+    @State private var codeInvalidFeedback: String = ""
+    @State private var nameInvalidFeeback: String = ""
+
+    
+    let minNameLen = 3
+    let maxNameLen = 14
     
     var body: some View {
         NavigationView {
@@ -33,7 +38,7 @@ struct HomeView: View {
                         .font(.largeTitle)
                     
                     //The Name Field
-                    TextField("Your Silly Little Name", text: $name, onEditingChanged: { isEditing in
+                    TextField("Your Name", text: $name, onEditingChanged: { isEditing in
                         if !isEditing || isEditing {
                             nameValid = nameValidator()
                         }})
@@ -97,11 +102,17 @@ struct HomeView: View {
                     //That way we can wait for .exists and even maybe add a loading indicator
                     
                     //Invalid feedback
-                    Text(tableModel.exists ? "" : invalidFeedback)
+                    Text(tableModel.exists ? "" : codeInvalidFeedback)
                         .foregroundColor(tableModel.exists ? .green : .red)
                         .animation(.spring().delay(0.2), value: tableModel.exists)
                         .frame(width: 200)
-                        .animation(.spring().speed(10), value: invalidFeedback)
+                        .animation(.spring().speed(10), value: codeInvalidFeedback)
+                    
+                    Text(nameValid ? "" : nameInvalidFeeback)
+                        .foregroundColor(nameValid ? .green : .red)
+                        .animation(.spring().delay(0.2), value: nameValid)
+                        .frame(width: 200)
+                        .animation(.spring().speed(10), value: nameValid)
                     
                     
                     
@@ -114,9 +125,39 @@ struct HomeView: View {
         if(name.isEmpty){
             return false
         }
-        //TODO: alphanumeric check here please
+        
+        if(name == " " || name.isEmpty){
+            nameInvalidFeeback = "Enter a name first"
+            return false
+        }
+        if(!isOnlyLetters(input: name)){
+            nameInvalidFeeback = "Your name can only be letters"
+            return false
+        }
+        if(name.count < minNameLen){
+            nameInvalidFeeback = "Min name length: \(minNameLen)"
+            return false
+        }
+        if(name.count > maxNameLen ){
+            nameInvalidFeeback = "Max name length: \(maxNameLen)"
+            return false
+        }
+        nameInvalidFeeback = ""
+        let defaults = UserDefaults.standard
+        defaults.set(name, forKey: "name")
         tableModel.myName = name
         
+        return true
+    }
+    
+    func isOnlyLetters(input: String) -> Bool{
+        let toValidate = input
+        for c in toValidate {
+            if("abcdefghijklmnopqrstuvwxyz".contains(c)){
+                continue
+            }
+            return false
+        }
         return true
     }
     
@@ -124,7 +165,7 @@ struct HomeView: View {
         print("joinPressed: setting model to entered code \(code)")
         tableModel.tableId = code
         if(tableModel.exists){
-            invalidFeedback = "Trying To Join..."
+            codeInvalidFeedback = "Trying To Join..."
             print("joining game \(tableModel.tableId)")
             tableModel.dataInitCallback = {
                 tableModel.joining = true
@@ -136,7 +177,7 @@ struct HomeView: View {
     
     func hostPressed() {
         print("tried to host")
-        invalidFeedback = "Trying To Host..."
+        codeInvalidFeedback = "Trying To Host..."
         tableModel.dataInitCallback = {
             tableModel.hosting = true
             
@@ -148,14 +189,14 @@ struct HomeView: View {
     func codeValidator() {
         tableModel.exists = false
         if(code.isEmpty){
-            invalidFeedback = "Invalid"
+            codeInvalidFeedback = "Invalid"
         }else if(code.count != 4){
-            invalidFeedback = "Invalid"
+            codeInvalidFeedback = "Invalid"
         }else{
-            invalidFeedback = "Checking..."
+            codeInvalidFeedback = "Checking..."
             //code is valid, actually check db now
             tableModel.gameExists(gameID: code) {
-                invalidFeedback = tableModel.exists ? "Exists" : "Game does not exist"
+                codeInvalidFeedback = tableModel.exists ? "Exists" : "Game does not exist"
             }
             
         }
