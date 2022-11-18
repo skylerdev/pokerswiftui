@@ -26,9 +26,7 @@
 		5D455C532802D1FF0070D8EF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D455C522802D1FF0070D8EF /* Preview Assets.xcassets */; };
 		5D538365283834850056046C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5D538364283834850056046C /* FirebaseAuth */; };
 		5D5DD712281367530003C9A4 /* StartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5DD711281367530003C9A4 /* StartButton.swift */; };
-		5D5DD714281666060003C9A4 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5DD713281666060003C9A4 /* OnboardingView.swift */; };
-		5DA5C8B229034FEE00AD7A0C /* NewHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5C8B129034FEE00AD7A0C /* NewHomeView.swift */; };
-		5DA5C8B62903500F00AD7A0C /* FancyCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5C8B52903500F00AD7A0C /* FancyCardView.swift */; };
+		5DA5C8B62903500F00AD7A0C /* RotatingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */; };
 		5DB5D065280CE46000F7F0F7 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D064280CE46000F7F0F7 /* FirebaseDatabase */; };
 		5DB5D067280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D066280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta */; };
 		5DB5D06B280CF29C00F7F0F7 /* TableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */; };
@@ -56,9 +54,7 @@
 		5D455C4F2802D1FF0070D8EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D455C522802D1FF0070D8EF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5D5DD711281367530003C9A4 /* StartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButton.swift; sourceTree = "<group>"; };
-		5D5DD713281666060003C9A4 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		5DA5C8B129034FEE00AD7A0C /* NewHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHomeView.swift; sourceTree = "<group>"; };
-		5DA5C8B52903500F00AD7A0C /* FancyCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyCardView.swift; sourceTree = "<group>"; };
+		5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatingCardView.swift; sourceTree = "<group>"; };
 		5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableModel.swift; sourceTree = "<group>"; };
 		5DB5D06E280D190F00F7F0F7 /* HostButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostButton.swift; sourceTree = "<group>"; };
 		5DB5D074280E1C8D00F7F0F7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -81,7 +77,6 @@
 		5D082CD7280908EC0050814A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5D5DD7152816660E0003C9A4 /* OnboardingView */,
 				5D082CE82809F4BC0050814A /* HomeScreen */,
 				5D082CDB28090A200050814A /* PokerTable */,
 			);
@@ -115,6 +110,7 @@
 		5D082CE82809F4BC0050814A /* HomeScreen */ = {
 			isa = PBXGroup;
 			children = (
+				5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */,
 				5D082CE92809F4E60050814A /* HomeView.swift */,
 				5DB5D06E280D190F00F7F0F7 /* HostButton.swift */,
 			);
@@ -185,24 +181,6 @@
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5D5DD7152816660E0003C9A4 /* OnboardingView */ = {
-			isa = PBXGroup;
-			children = (
-				5DA5C8AC29034F9C00AD7A0C /* NewHomeScreen */,
-				5D5DD713281666060003C9A4 /* OnboardingView.swift */,
-			);
-			path = OnboardingView;
-			sourceTree = "<group>";
-		};
-		5DA5C8AC29034F9C00AD7A0C /* NewHomeScreen */ = {
-			isa = PBXGroup;
-			children = (
-				5DA5C8B129034FEE00AD7A0C /* NewHomeView.swift */,
-				5DA5C8B52903500F00AD7A0C /* FancyCardView.swift */,
-			);
-			path = NewHomeScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -286,11 +264,9 @@
 			files = (
 				5D082CE72809F24C0050814A /* Deck.swift in Sources */,
 				5D455C4E2802D1FF0070D8EF /* ContentView.swift in Sources */,
-				5DA5C8B62903500F00AD7A0C /* FancyCardView.swift in Sources */,
-				5DA5C8B229034FEE00AD7A0C /* NewHomeView.swift in Sources */,
+				5DA5C8B62903500F00AD7A0C /* RotatingCardView.swift in Sources */,
 				497E3C0F291DCF0600C9D0B9 /* MiniCardView.swift in Sources */,
 				5D082CDF28090B9B0050814A /* YourCardsView.swift in Sources */,
-				5D5DD714281666060003C9A4 /* OnboardingView.swift in Sources */,
 				5DB5D06B280CF29C00F7F0F7 /* TableModel.swift in Sources */,
 				5DB5D06F280D190F00F7F0F7 /* HostButton.swift in Sources */,
 				5D082CF0280A13820050814A /* PlayerView.swift in Sources */,

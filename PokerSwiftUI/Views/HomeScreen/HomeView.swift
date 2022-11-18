@@ -26,9 +26,8 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Image("placeholdertable")
-                    .resizable()
-                
+                RotatingCardView(card: Card(suit: .heart, rank: .ace))
+                    .offset(y: -200)
                 
                 
                 VStack(alignment: .center) {
