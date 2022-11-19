@@ -26,6 +26,7 @@
 		5D455C532802D1FF0070D8EF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D455C522802D1FF0070D8EF /* Preview Assets.xcassets */; };
 		5D538365283834850056046C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5D538364283834850056046C /* FirebaseAuth */; };
 		5D5DD712281367530003C9A4 /* StartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5DD711281367530003C9A4 /* StartButton.swift */; };
+		5D7EEB33292732FB0050FAC4 /* ValidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7EEB32292732FB0050FAC4 /* ValidView.swift */; };
 		5DA5C8B62903500F00AD7A0C /* RotatingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */; };
 		5DB5D065280CE46000F7F0F7 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D064280CE46000F7F0F7 /* FirebaseDatabase */; };
 		5DB5D067280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D066280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta */; };
@@ -54,6 +55,7 @@
 		5D455C4F2802D1FF0070D8EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D455C522802D1FF0070D8EF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5D5DD711281367530003C9A4 /* StartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButton.swift; sourceTree = "<group>"; };
+		5D7EEB32292732FB0050FAC4 /* ValidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidView.swift; sourceTree = "<group>"; };
 		5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatingCardView.swift; sourceTree = "<group>"; };
 		5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableModel.swift; sourceTree = "<group>"; };
 		5DB5D06E280D190F00F7F0F7 /* HostButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostButton.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */,
 				5D082CE92809F4E60050814A /* HomeView.swift */,
 				5DB5D06E280D190F00F7F0F7 /* HostButton.swift */,
+				5D7EEB32292732FB0050FAC4 /* ValidView.swift */,
 			);
 			path = HomeScreen;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				5DB5D06F280D190F00F7F0F7 /* HostButton.swift in Sources */,
 				5D082CF0280A13820050814A /* PlayerView.swift in Sources */,
 				5D5DD712281367530003C9A4 /* StartButton.swift in Sources */,
+				5D7EEB33292732FB0050FAC4 /* ValidView.swift in Sources */,
 				5D082CFB280A2AF10050814A /* BetControls.swift in Sources */,
 				4955C59A291C9402000BECC8 /* TableCardsView.swift in Sources */,
 				5D082CE3280917DE0050814A /* Card.swift in Sources */,
