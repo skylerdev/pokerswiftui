@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct HomeView: View {
+    let pattern = "[^A-Za-z0-9]+"
     
     @EnvironmentObject var tableModel: TableModel
-    @State private var code: String = ""
-    @State private var name: String = ""
-    
+    @ObservedObject var name = AlphanumericInput(limit: 18, nums: true)
+    @ObservedObject var code = AlphanumericInput(limit: 4, nums: false)
+
     @State private var nameValid = false
     @State var isAnimating = false // <1>
     
@@ -37,7 +38,7 @@ struct HomeView: View {
                         .font(.largeTitle)
                     
                     //The Name Field
-                    TextField("Your Name", text: $name, onEditingChanged: { isEditing in
+                    TextField("Your Name", text: $name.value, onEditingChanged: { isEditing in
                         if !isEditing || isEditing {
                             nameValid = nameValidator()
                         }})
@@ -53,14 +54,14 @@ struct HomeView: View {
                     
                     HStack {
                     //The Room Code Field
-                        TextField("Room Code", text: $code, onEditingChanged: { isEditing in
+                        TextField("Room Code", text: $code.value, onEditingChanged: { isEditing in
                             if !isEditing {
                                 codeValidator()
                             }})
                     .offset(x: 10)
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
-                    
+                   
                        
                         
 
@@ -121,30 +122,14 @@ struct HomeView: View {
     }
     
     func nameValidator() -> Bool {
-        if(name.isEmpty){
-            return false
-        }
-        
-        if(name == " " || name.isEmpty){
-            nameInvalidFeeback = "Enter a name first"
-            return false
-        }
-        if(!isOnlyLetters(input: name)){
-            nameInvalidFeeback = "Your name can only be letters"
-            return false
-        }
-        if(name.count < minNameLen){
+        if(name.value.count < minNameLen){
             nameInvalidFeeback = "Min name length: \(minNameLen)"
-            return false
-        }
-        if(name.count > maxNameLen ){
-            nameInvalidFeeback = "Max name length: \(maxNameLen)"
             return false
         }
         nameInvalidFeeback = ""
         let defaults = UserDefaults.standard
-        defaults.set(name, forKey: "name")
-        tableModel.myName = name
+        defaults.set(name.value, forKey: "name")
+        tableModel.myName = name.value
         
         return true
     }
@@ -162,7 +147,7 @@ struct HomeView: View {
     
     func joinPressed() {
         print("joinPressed: setting model to entered code \(code)")
-        tableModel.tableId = code
+        tableModel.tableId = code.value
         if(tableModel.exists){
             codeInvalidFeedback = "Trying To Join..."
             print("joining game \(tableModel.tableId)")
@@ -187,14 +172,14 @@ struct HomeView: View {
     
     func codeValidator() {
         tableModel.exists = false
-        if(code.isEmpty){
+        if(code.value.isEmpty){
             codeInvalidFeedback = "Invalid"
-        }else if(code.count != 4){
+        }else if(code.value.count != 4){
             codeInvalidFeedback = "Invalid"
         }else{
             codeInvalidFeedback = "Checking..."
             //code is valid, actually check db now
-            tableModel.gameExists(gameID: code) {
+            tableModel.gameExists(gameID: code.value) {
                 codeInvalidFeedback = tableModel.exists ? "Exists" : "Game does not exist"
             }
             
