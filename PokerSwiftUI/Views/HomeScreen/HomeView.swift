@@ -16,8 +16,9 @@ struct HomeView: View {
     @State private var nameValid = false
     @State var isAnimating = false // <1>
     
-    @State private var codeInvalidFeedback: String = ""
     @State private var nameInvalidFeeback: String = ""
+    
+    @State private var codeValidState: ValidState = .notRunning
 
     
     let minNameLen = 3
@@ -26,8 +27,10 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             ZStack {
+            
                 RotatingCardView(card: Card(suit: .heart, rank: .ace))
                     .offset(y: -200)
+               
                 
                 
                 VStack(alignment: .center) {
@@ -48,50 +51,34 @@ struct HomeView: View {
                     .padding(.horizontal)
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
-                    .zIndex(1)
-                    
-                    
-                    HStack {
-                    //The Room Code Field
-                        TextField("Room Code", text: $code, onEditingChanged: { isEditing in
-                            if !isEditing {
-                                codeValidator()
-                            }})
-                    .offset(x: 10)
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    
-                       
-                        
+                
 
-                    .offset(x: -10)
-                    }
+                    //The Room Code Field
+                    TextField("Room Code", text: $code,onEditingChanged: { isEditing in
+                        if !isEditing {
+                            codeValidator()
+                        }})
+                    .offset(x:10)
                     .frame(height: 50)
                     .background(.thickMaterial)
                     .cornerRadius(10)
                     .padding(.horizontal)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+
                     
-                    //Lets you join or host room
-                    NavigationLink(isActive: $tableModel.hosting) {
-                        TableHost()
-                    } label: { EmptyView() }
-                    
-                    NavigationLink(isActive: $tableModel.joining) {
-                        TableHost()
-                    } label: { EmptyView() }
+                   
                     
                     HStack(alignment: .center) {
                         HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
                             .padding(.horizontal)
                             .padding(.trailing, -10)
+                        
                         HostButton(pressed: joinPressed, valid: nameValid && tableModel.exists, text: "Join")
                             .padding(.horizontal)
                             .padding(.leading, -10)
+                        
                     }
-                    
-                    //.background(.blue)
-                    
-
                     
                     
                     //Buttons
@@ -100,12 +87,7 @@ struct HomeView: View {
                     //TODO: Use an internal codeValid state in combination with .exists and nameValid?
                     //That way we can wait for .exists and even maybe add a loading indicator
                     
-                    //Invalid feedback
-                    Text(tableModel.exists ? "" : codeInvalidFeedback)
-                        .foregroundColor(tableModel.exists ? .green : .red)
-                        .animation(.spring().delay(0.2), value: tableModel.exists)
-                        .frame(width: 200)
-                        .animation(.spring().speed(10), value: codeInvalidFeedback)
+                   
                     
                     Text(nameValid ? "" : nameInvalidFeeback)
                         .foregroundColor(nameValid ? .green : .red)
@@ -113,11 +95,29 @@ struct HomeView: View {
                         .frame(width: 200)
                         .animation(.spring().speed(10), value: nameValid)
                     
+                    //ValidView(state: self.codeValidState)
+                    Text("\(codeValidState.rawValue)")
+                    
+                   
                     
                     
-                }
-            }
-        }
+                    
+                    //THESE ARE FOR NAV VIEW AND DO NOT FUNCTIONALLY EXIST
+                    //Lets you join or host room
+                    NavigationLink(isActive: $tableModel.hosting) {
+                        TableHost()
+                    } label: { EmptyView() }
+                    
+                    NavigationLink(isActive: $tableModel.joining) {
+                        TableHost()
+                    } label: { EmptyView() }
+                  
+                    ValidView(state: codeValidState)
+
+                } // END VSTACK
+            } // END ZSTACK
+            
+        } // END NAV VIEW
     }
     
     func nameValidator() -> Bool {
@@ -164,7 +164,7 @@ struct HomeView: View {
         print("joinPressed: setting model to entered code \(code)")
         tableModel.tableId = code
         if(tableModel.exists){
-            codeInvalidFeedback = "Trying To Join..."
+            print("trying to join")
             print("joining game \(tableModel.tableId)")
             tableModel.dataInitCallback = {
                 tableModel.joining = true
@@ -176,7 +176,6 @@ struct HomeView: View {
     
     func hostPressed() {
         print("tried to host")
-        codeInvalidFeedback = "Trying To Host..."
         tableModel.dataInitCallback = {
             tableModel.hosting = true
             
@@ -185,17 +184,16 @@ struct HomeView: View {
        
     }
     
-    func codeValidator() {
+     func codeValidator() {
         tableModel.exists = false
-        if(code.isEmpty){
-            codeInvalidFeedback = "Invalid"
-        }else if(code.count != 4){
-            codeInvalidFeedback = "Invalid"
+         if(code.count != 4){
+            print("Code not 4 letters")
+            return
         }else{
-            codeInvalidFeedback = "Checking..."
+            codeValidState = .running
             //code is valid, actually check db now
             tableModel.gameExists(gameID: code) {
-                codeInvalidFeedback = tableModel.exists ? "Exists" : "Game does not exist"
+                codeValidState = tableModel.exists ? .valid : .invalid
             }
             
         }

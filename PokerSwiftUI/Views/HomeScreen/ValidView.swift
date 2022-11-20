@@ -8,107 +8,82 @@
 import SwiftUI
 
 struct ValidView: View {
+        
+    var state: ValidState
     
-    private var threeDimensional = false
-    
-    @State public var valid = false
-    @State public var checking = false
-    
-    @State public var visible = true
-    
-    @State private var displaying = 0
-
-
-    var body: some View {
-        if(checking){
-            if(threeDimensional){
-                hyperCheckingText()
-            }else{
-                checkingText()
-                    .opacity(visible ? 1 : 0)
-            }
-        }else{
-            Text(valid ? "Valid" : "Invalid")
-                .padding()
-                .overlay(
-                    Capsule()
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [5, 10]))
-                    .onAppear {
-                        withAnimation(.linear) {
-                            displaying += 1
-                        }
-                    }
-                    
-                )
+    private var color: Color {
+        switch state {
+        case ValidState.valid:
+            return .green
+        case ValidState.invalid:
+            return .red
+        default:
+            return .black
         }
+    }
+    private var text: String {
+        switch state {
+        case ValidState.valid:
+            return "Valid"
+        case ValidState.invalid:
+            return "Invalid"
+        default:
+            return "Checking..."
+        }
+    }
+    @State private var shouldDisplay: Bool = false
+    
+    @State private var phase: CGFloat = 0.0
+    
+    var body: some View {
+        ZStack {
+            Capsule()
+                .stroke(color, style: StrokeStyle(lineWidth: 4, dash: [50, 5, 20, 5], dashPhase: phase))
+           
+            .onAppear {
+                DispatchQueue.main.async {
+                    withAnimation(.linear.repeatForever(autoreverses: false)) {
+                        if(state == .running) {
+                            phase += 100
+                        }
+            }}}
+            
+
+            Text(text)
+        
+           
+            
+        }//END ZSTACK
+        .frame(width: 100, height: 30)
+        .opacity(shouldDisplay ? 1 : 0)
+        .onChange(of: state, perform: { newValue in
+            shouldDisplay = true
+            
+            if(newValue == .valid || newValue == .invalid){
+                withAnimation(.easeOut(duration: 1)) {
+                        shouldDisplay = false
+                }
+            }
+        })
+
+        
        
     }
 }
 
-struct hyperCheckingText : View {
+enum ValidState: Int {
+    case notRunning = 0, running = 1, valid = 2, invalid = 3
     
-    @State private var degrees: CGFloat = 360
-    
-    var body: some View {
-        
-        Text("Checking...")
-            .foregroundColor(.black)
-            .padding()
-            //First Circle
-            .overlay(
-                Circle()
-                .scale(2)
-                .stroke(Color.green, style: StrokeStyle(lineWidth: 3, dash: [1]))
-                .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 1, z: 0))
-                .animation(.linear(duration: 3)
-                    .repeatForever(autoreverses: false),
-                           value: degrees)
-                    .onAppear {
-                        degrees = 1
-                    }
-            )
-            //Second Circle
-            .overlay( Circle()
-                .scale(2)
-                .stroke(Color.green, style: StrokeStyle(lineWidth: 3, dash: [1]))
-                .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: -1, z: 0))
-                .animation(.linear(duration: 3)
-                    .repeatForever(autoreverses: false),
-                           value: degrees)
-                    .onAppear {
-                        degrees = 1
-                    }
-            )
-    }
 }
 
-
-struct checkingText : View {
-    
-    @State private var phase = 0.0
-
-    var body: some View {
-        
-        Text("Checking...")
-            .padding()
-            .overlay(
-                Capsule()
-                .scale(1)
-                .stroke(style: StrokeStyle(lineWidth: 2, dash: [50, 5, 20, 5], dashPhase: phase))
-                .onAppear {
-                    withAnimation(.linear.repeatForever(autoreverses: false)) {
-                        phase += 90
-                    }
-                }
-                
-            )
-    }
-}
 
 
 struct ValidView_Previews: PreviewProvider {
     static var previews: some View {
-        ValidView()
-        checkingText()
+        ValidView(state: .valid
+                  
+        )
+            .previewLayout(.sizeThatFits)
+            .previewLayout(.fixed(width: 100, height: 100))
     }
 }
