@@ -13,20 +13,18 @@ struct RotatingCardView: View {
     @State private var animationAmount: CGFloat = 360
     
     var body: some View {
-        VStack {
             CardView(card: card)
                 .rotation3DEffect(.degrees(animationAmount), axis: (x: 0, y: 1 , z: 0), anchor: .center)
-           
-        }
-        .animation(.linear(duration: 3)
-            .repeatForever(autoreverses: true),
-                   value: animationAmount)
-        .onAppear {
-            animationAmount = 1
-        }
-        
-                
-            
+                .onAppear {
+                    //-1 hour lmao
+                    DispatchQueue.main.async {
+                        withAnimation(.linear(duration: 3)
+                                      
+                            .repeatForever(autoreverses: false)){
+                                animationAmount = 0
+                            }
+                    }
+                }
     }
 }
 
