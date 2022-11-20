@@ -29,6 +29,7 @@
 		5D7EEB33292732FB0050FAC4 /* ValidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7EEB32292732FB0050FAC4 /* ValidView.swift */; };
 		5DA5C8B62903500F00AD7A0C /* RotatingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */; };
 		5DA9C61D292ABB02009E054A /* AlphanumericInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA9C61C292ABB02009E054A /* AlphanumericInput.swift */; };
+		5DA9C61F292ACBE2009E054A /* HyperValidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA9C61E292ACBE2009E054A /* HyperValidView.swift */; };
 		5DB5D065280CE46000F7F0F7 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D064280CE46000F7F0F7 /* FirebaseDatabase */; };
 		5DB5D067280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB5D066280CE46000F7F0F7 /* FirebaseDatabaseSwift-Beta */; };
 		5DB5D06B280CF29C00F7F0F7 /* TableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */; };
@@ -59,6 +60,7 @@
 		5D7EEB32292732FB0050FAC4 /* ValidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidView.swift; sourceTree = "<group>"; };
 		5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatingCardView.swift; sourceTree = "<group>"; };
 		5DA9C61C292ABB02009E054A /* AlphanumericInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphanumericInput.swift; sourceTree = "<group>"; };
+		5DA9C61E292ACBE2009E054A /* HyperValidView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperValidView.swift; sourceTree = "<group>"; };
 		5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableModel.swift; sourceTree = "<group>"; };
 		5DB5D06E280D190F00F7F0F7 /* HostButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostButton.swift; sourceTree = "<group>"; };
 		5DB5D074280E1C8D00F7F0F7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 		5D082CE82809F4BC0050814A /* HomeScreen */ = {
 			isa = PBXGroup;
 			children = (
+				5DA9C61E292ACBE2009E054A /* HyperValidView.swift */,
 				5DA5C8B52903500F00AD7A0C /* RotatingCardView.swift */,
 				5D082CE92809F4E60050814A /* HomeView.swift */,
 				5DB5D06E280D190F00F7F0F7 /* HostButton.swift */,
@@ -284,6 +287,7 @@
 				5D082CE3280917DE0050814A /* Card.swift in Sources */,
 				5D082CF7280A17490050814A /* Player.swift in Sources */,
 				5D082CDD28090A2A0050814A /* TableHost.swift in Sources */,
+				5DA9C61F292ACBE2009E054A /* HyperValidView.swift in Sources */,
 				5D082CF2280A16E70050814A /* Game.swift in Sources */,
 				5D082CEA2809F4E60050814A /* HomeView.swift in Sources */,
 				5D082CE52809F1E50050814A /* CardView.swift in Sources */,
