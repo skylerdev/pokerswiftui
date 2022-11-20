@@ -9,16 +9,12 @@ import SwiftUI
 
 struct HomeView: View {
     
-    let minNameLen = 3
+    let minNameLen = 1
     
     @EnvironmentObject var tableModel: TableModel
     @ObservedObject var name = AlphanumericInput(limit: 18, nums: true)
     @ObservedObject var code = AlphanumericInput(limit: 4, nums: false)
-
-    @State private var nameValid = false
-    
-    @State private var nameInvalidFeeback: String = ""
-    
+        
     @State private var codeValidState: ValidState = .notRunning
 
     
@@ -37,10 +33,7 @@ struct HomeView: View {
                         .font(.largeTitle)
                     
                     //The Name Field
-                    TextField("Your Name", text: $name.value, onEditingChanged: { isEditing in
-                        if !isEditing || isEditing {
-                            nameValid = nameValidator()
-                        }})
+                    TextField("Your Name", text: $name.value)
                     .offset(x:10)
                     .frame(height: 50)
                     .background(.thickMaterial)
@@ -64,21 +57,15 @@ struct HomeView: View {
                     .padding(.horizontal)
 
                     HStack(alignment: .center) {
-                        HostButton(pressed: hostPressed, valid: nameValid, text: "Host")
+                        HostButton(pressed: hostPressed, valid: ( minNameLen < name.value.count), text: "Host")
                             .padding(.horizontal)
                             .padding(.trailing, -10)
                         
-                        HostButton(pressed: joinPressed, valid: nameValid && tableModel.exists, text: "Join")
+                        HostButton(pressed: joinPressed, valid: minNameLen < name.value.count && tableModel.exists, text: "Join")
                             .padding(.horizontal)
                             .padding(.leading, -10)
                         
                     }
-                    
-                    Text(nameValid ? "" : nameInvalidFeeback)
-                        .foregroundColor(nameValid ? .green : .red)
-                        .animation(.spring().delay(0.2), value: nameValid)
-                        .frame(width: 200)
-                        .animation(.spring().speed(10), value: nameValid)
                     
    
                     //THESE ARE FOR NAV VIEW AND DO NOT FUNCTIONALLY EXIST
@@ -99,17 +86,6 @@ struct HomeView: View {
         } // END NAV VIEW
     }
     
-    func nameValidator() -> Bool {
-        if(name.value.count < minNameLen){
-            nameInvalidFeeback = "Min name length: \(minNameLen)"
-            return false
-        }
-        nameInvalidFeeback = ""
-        let defaults = UserDefaults.standard
-        defaults.set(name.value, forKey: "name")
-        tableModel.myName = name.value
-        return true
-    }
     
     func joinPressed() {
         print("joinPressed: setting model to entered code \(code)")
@@ -125,6 +101,9 @@ struct HomeView: View {
     }
     
     func hostPressed() {
+        let defaults = UserDefaults.standard
+        defaults.set(name.value, forKey: "name")
+        tableModel.myName = name.value
         print("tried to host")
         tableModel.dataInitCallback = {
             tableModel.hosting = true
