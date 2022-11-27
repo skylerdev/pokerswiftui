@@ -10,10 +10,14 @@ import FirebaseDatabase
 import FirebaseDatabaseSwift
 import Combine
 import SwiftUI
+import FirebaseFunctions
 
 class TableModel: ObservableObject {
     
+    lazy var functions = Functions.functions()
+
     //MARK: - INSTANCE VARIABLES
+    let debugMode = false
     
     //These are modified using fields in home page
     var tableId: String = ""
@@ -83,9 +87,6 @@ class TableModel: ObservableObject {
         }
         return nil
     }
-    
-    
-    
 
     //MARK: - INIT
     
@@ -129,11 +130,13 @@ class TableModel: ObservableObject {
                 return try! snap.data(as: Player.self)
             })
             
-            
-            print("CHANGE IN MODEL //////////")
-            print(snap)
-            print(self.players)
-            print("ENDCHANGE // \(TableModel.randomString(length: 9))")
+            if(self.debugMode){
+                
+                print("CHANGE IN MODEL //////////")
+                print(snap)
+                print(self.players)
+                print("ENDCHANGE // \(TableModel.randomString(length: 9))")
+            }
             
             
             self.game = try! snap.childSnapshot(forPath: "game").data(as: Game.self)
@@ -202,6 +205,7 @@ class TableModel: ObservableObject {
       
     }
     
+    
     func setBlinds(bigBlindIndex: Int) {
         for p in players {
             ref.child(pidToPath(id: p.id)).updateChildValues(["bigBlind" : false, "littleBlind" : false])
@@ -228,16 +232,17 @@ class TableModel: ObservableObject {
     
     //BET
     func bet(amount: Int) {
-        let chipsAfterBet = me!.chips - amount
+        //why is this a looooop
         for i in 0..<players.count {
             if(players[i].id == myPlayerId){
-                players[i].currentBet = me!.currentBet + amount
-                players[i].chips = chipsAfterBet
+                players[i].currentBet += amount
+                players[i].chips -= amount
                 players[i].hasActed = true
             }
         }
+        
+
         self.pushPlayers()
-        self.pushGame()
        
         self.goNext()
     }
@@ -377,40 +382,102 @@ class TableModel: ObservableObject {
         return false
     }
     
-    func endHand(){
+    
+    func endHand() {
+
         
-        var unfolded: String = ""
-        
-        for p in players {
-            if(!p.folded){
-                unfolded = unfolded + p.name + " "
-            }
-            ref.child(pidToPath(id: p.id)).updateChildValues([
-                "totalRoundBet" : 0,
-                "currentBet" : 0,
-                "acting" : false,
-                "hasActed" : false,
-                "folded" : false
-            ])
+        //get the people whos hands we need to rank
+        var unfolded = players.filter { p in
+            p.folded == false
         }
         
+        print(unfolded)
+        
+        if(unfolded.count == 1){
+            //well. We have a winner
+            newHand(winner: unfolded[0])
+        }else{
+            //get some hands going
+            var hands: [String: [String]] = [:]
+            for p in unfolded {
+                hands[p.id] = p.cards.map({ c in
+                    return c.toString()
+                }) + game.cards.map({ c in
+                    return c.toString()
+                })
+            }
+            
+            let dict : NSDictionary = hands as NSDictionary
+            
+            functions.httpsCallable("checkCards").call(["hands": dict]) { result, error in
+              if let error = error as NSError? {
+                if error.domain == FunctionsErrorDomain {
+                  let code = FunctionsErrorCode(rawValue: error.code)
+                  let message = error.localizedDescription
+                  let details = error.userInfo[FunctionsErrorDetailsKey]
+                    print(code, message, details)
+                }
+                  //...
+              }
+              if let data = result?.data as? [String: Any], let id = data["id"] as? String {
+                  print("Got a result from compareHands")
+                  print(data)
+                  guard let p = self.playerFromId(id: id) else {
+                      print("couldnt get player from id comparehands gave us")
+                      return
+                  }
+                  
+                   
+                self.newHand(winner: p)
+              }
+            }
+        }
+        
+    }
+    
+    
+    func newHand(winner: Player){
+        print("calling new hand! winner was \(winner.name) with id of \(winner.id)")
+        
+        //collect the last chips
+        var roundPot = 0
+
+        for i in 0..<players.count {            
+            //pot collects bets
+            roundPot += players[i].currentBet
+            players[i].currentBet = 0
+        }
+        
+        game.pot = game.pot + roundPot
+    
+        
+        //reset players
+        for i in 0..<players.count {
+            players[i].reset()
+            if(players[i].id == winner.id){
+                players[i].addChips(chips: game.pot)
+            }
+        }
+        pushPlayers()
+        
+        
+        //start a new hand
+        let index = getBigBlindIndex()
+        guard let bb = index else {
+            print("newHand: couldnt find bigblind")
+            return
+        }
+        
+        //reset game
         game.handNumber += 1
         game.phase = .preflop
         game.pot = 0
-        
         pushGame()
-        feedback = "winner was " + unfolded
         
-
-        let index = getBigBlindIndex()
-        guard let bb = index else {
-            print("endHand: couldnt find bigblind")
-            return
-        }
         setBlinds(bigBlindIndex: resolveIndex(bb+1))
         dealCards()
     }
-    
+
     func getBigBlindIndex() -> Int? {
        return players.firstIndex { p in
             p.bigBlind == true
@@ -431,6 +498,9 @@ class TableModel: ObservableObject {
                                                              ])
         }
     }
+    
+    
+    
     
     func dealCards() {
         print("dealing cards")

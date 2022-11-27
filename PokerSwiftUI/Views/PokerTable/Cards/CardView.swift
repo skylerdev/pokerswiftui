@@ -19,7 +19,7 @@ struct CardView: View {
                 .padding(.bottom, -60)
                 .padding(.horizontal, -10)
             
-            Text(card.rank.rawValue)
+            Text(card.displayRank())
                     .bold()
                     .font(.custom("appleSDGothicNeo-Regular", size: 20))
                     .dynamicTypeSize(.accessibility4)
@@ -29,7 +29,7 @@ struct CardView: View {
                     .colorInvert()
                     .offset(x:1, y:1)
             
-            Text(card.rank.rawValue)
+            Text(card.displayRank())
                     .bold()
                     .font(.custom("AppleSDGothicNeo-Regular", size: 20))
                     .dynamicTypeSize(.accessibility4)

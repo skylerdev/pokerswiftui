@@ -9,11 +9,12 @@ import SwiftUI
 
 struct MiniCardView: View {
     var cards: [Card]
+    var showing: Bool
     
     var body: some View {
         VStack (alignment: .trailing) {
             ForEach(cards, id: \.self){ card in
-                Text(card.rank.rawValue + card.toIcon() + " ")
+                Text(card.displayRank() + card.toIcon() + " ")
                     .padding(.vertical, 3)
                     .padding(.leading, 50)
                     .background(.thickMaterial)
@@ -23,6 +24,7 @@ struct MiniCardView: View {
                     .foregroundColor(card.suit == .heart || card.suit == .diamond ? .red : .primary)
                     .padding(.bottom, -4)
                     .padding(.leading, -40)
+                    .opacity(showing ? 1 : 0)
                     
             }
             
@@ -34,7 +36,7 @@ struct MiniCardView: View {
 
 struct MiniCardView_Previews: PreviewProvider {
     static var previews: some View {
-        MiniCardView(cards: Array(repeating: Card(suit: .diamond, rank: .ten), count: 2))
+        MiniCardView(cards: Array(repeating: Card(suit: .diamond, rank: .ten), count: 2), showing: false)
 
     }
 }

@@ -1,3 +1,10 @@
 
 PokerSwiftUI.xcodeproj/xcuserdata/skylerdevlaming.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
 PokerSwiftUI.xcodeproj/project.xcworkspace/xcuserdata/skylerdevlaming.xcuserdatad/UserInterfaceState.xcuserstate
+
+
+.idea
+*.idea
+
+.DS_Store
+*.DS_Store
