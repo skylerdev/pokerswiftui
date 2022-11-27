@@ -160,6 +160,7 @@ class TableModel: ObservableObject {
         
         ref.child("\(rootPath)/exists").setValue(true)
         print(rootPath)
+        self.game = Game()
         do {
             try ref.child(gamePath).setValue(from: game) { err in
                 if let e = err {
