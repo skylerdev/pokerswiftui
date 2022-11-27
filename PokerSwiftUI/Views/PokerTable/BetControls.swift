@@ -132,6 +132,9 @@ struct BetControls: View {
         }.background(.regularMaterial)
             .foregroundColor(controlsEnabled ? .accentColor : .gray)
             .disabled(!controlsEnabled)
+            .onChange(of: controlsEnabled) { newValue in
+                curBet = minBet
+            }
             
     }
 }
