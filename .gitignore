@@ -5,3 +5,6 @@ PokerSwiftUI.xcodeproj/project.xcworkspace/xcuserdata/skylerdevlaming.xcuserdata
 
 .idea
 *.idea
+
+.DS_Store
+*.DS_Store
