@@ -87,9 +87,6 @@ class TableModel: ObservableObject {
         }
         return nil
     }
-    
-    
-    
 
     //MARK: - INIT
     
@@ -235,16 +232,17 @@ class TableModel: ObservableObject {
     
     //BET
     func bet(amount: Int) {
-        let chipsAfterBet = me!.chips - amount
+        //why is this a looooop
         for i in 0..<players.count {
             if(players[i].id == myPlayerId){
-                players[i].currentBet = me!.currentBet + amount
-                players[i].chips = chipsAfterBet
+                players[i].currentBet += amount
+                players[i].chips -= amount
                 players[i].hasActed = true
             }
         }
+        
+
         self.pushPlayers()
-        self.pushGame()
        
         self.goNext()
     }
@@ -386,6 +384,8 @@ class TableModel: ObservableObject {
     
     
     func endHand() {
+
+        
         //get the people whos hands we need to rank
         var unfolded = players.filter { p in
             p.folded == false
@@ -438,6 +438,18 @@ class TableModel: ObservableObject {
     
     func newHand(winner: Player){
         print("calling new hand! winner was \(winner.name) with id of \(winner.id)")
+        
+        //collect the last chips
+        var roundPot = 0
+
+        for i in 0..<players.count {            
+            //pot collects bets
+            roundPot += players[i].currentBet
+            players[i].currentBet = 0
+        }
+        
+        game.pot = game.pot + roundPot
+    
         
         //reset players
         for i in 0..<players.count {

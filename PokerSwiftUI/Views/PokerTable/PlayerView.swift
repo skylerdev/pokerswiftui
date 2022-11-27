@@ -14,7 +14,7 @@ struct PlayerView: View {
     
     var body: some View {
         HStack {
-            MiniCardView(cards: player.cards)
+            MiniCardView(cards: player.cards, showing: player.showing)
                 .padding(.leading, -60)
             ZStack {
                 

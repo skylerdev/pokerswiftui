@@ -16,7 +16,7 @@ struct Card: Codable, Hashable {
         return rank.rawValue + suit.rawValue
     }
     
-    func toDisplay() -> String {
+    func displayRank() -> String {
         if(rank == .ten){
             return "10"
         }else { return rank.rawValue }
