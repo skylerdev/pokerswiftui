@@ -13,7 +13,13 @@ struct Card: Codable, Hashable {
     var rank: Rank
     
     func toString() -> String {
-        return("\(rank) of \(suit.rawValue)s")
+        return rank.rawValue + suit.rawValue
+    }
+    
+    func toDisplay() -> String {
+        if(rank == .ten){
+            return "10"
+        }else { return rank.rawValue }
     }
     
     func toIcon() -> String {
@@ -33,10 +39,10 @@ struct Card: Codable, Hashable {
 
 
 enum Suit: String, Codable, CaseIterable {
-    case heart,
-    diamond,
-    club,
-    spade
+    case heart = "h",
+    diamond = "d",
+    club = "c",
+    spade = "s"
 }
 
 
@@ -50,7 +56,7 @@ enum Rank: String, Codable,  CaseIterable {
          seven = "7",
          eight = "8",
          nine = "9",
-         ten = "10",
+         ten = "T",
          jack = "J",
          queen = "Q",
          king = "K"
