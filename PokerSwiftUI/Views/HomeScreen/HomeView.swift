@@ -24,7 +24,6 @@ struct HomeView: View {
             
                 RotatingCardView(card: Card(suit: .heart, rank: .ace))
                     .offset(y: -200)
-               
                 
                 VStack(alignment: .center) {
                     //The Title
@@ -90,6 +89,7 @@ struct HomeView: View {
     func joinPressed() {
         print("joinPressed: setting model to entered code \(code)")
         tableModel.tableId = code.value
+        tableModel.myName = name.value
         if(tableModel.exists){
             print("trying to join")
             print("joining game \(tableModel.tableId)")
