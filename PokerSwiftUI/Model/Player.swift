@@ -20,6 +20,7 @@ struct Player: Codable, Identifiable {
     var folded = false
     var littleBlind = false
     var showing = false
+    var won = false
     var hasBet: Bool {
         return currentBet != 0
     }
@@ -34,6 +35,7 @@ struct Player: Codable, Identifiable {
         acting = false
         hasActed = false
         folded = false
+        won = false
     }
     
     mutating func nextPhase() {

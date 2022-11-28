@@ -46,6 +46,7 @@ class TableModel: ObservableObject {
     //MARK: - COMPUTED PROPERTIES
     
     private let ref = Database.database().reference()
+    private let roundEndTime: Double = 5
     
     //Just convenient firebase paths to common info
     private var rootPath: String {
@@ -396,7 +397,7 @@ class TableModel: ObservableObject {
         
         if(unfolded.count == 1){
             //well. We have a winner
-            newHand(winner: unfolded[0])
+            enterEndHandState(winner: unfolded[0])
         }else{
             //get some hands going
             var hands: [String: [String]] = [:]
@@ -429,36 +430,47 @@ class TableModel: ObservableObject {
                   }
                   
                    
-                self.newHand(winner: p)
+                self.enterEndHandState(winner: p)
               }
             }
         }
         
     }
     
-    
-    func newHand(winner: Player){
-        print("calling new hand! winner was \(winner.name) with id of \(winner.id)")
+    func enterEndHandState(winner: Player){
         
-        //collect the last chips
+        print("calling new hand! winner was \(winner.name) with id of \(winner.id)")
+       
+        //collect and reset bets
         var roundPot = 0
-
-        for i in 0..<players.count {            
+        for i in 0..<players.count {
+            let id = players[i].id
             //pot collects bets
             roundPot += players[i].currentBet
-            players[i].currentBet = 0
+            ref.child(pidToPath(id: id)).updateChildValues(["currentBet" : 0])
         }
         
-        game.pot = game.pot + roundPot
-    
         
-        //reset players
+        let chips = winner.chips + game.pot + roundPot
+        
+        
+        ref.child(pidToPath(id: winner.id)).updateChildValues(["won" : true, "chips" : chips])
+        ref.child(gamePath).updateChildValues(["pot" : 0])
+        //update the winner player
+       
+   
+        
+        let timer = Timer.scheduledTimer(withTimeInterval: self.roundEndTime, repeats: false) { (timer) in
+            self.newHand()
+        }
+    }
+    
+    func newHand(){
+        
         for i in 0..<players.count {
             players[i].reset()
-            if(players[i].id == winner.id){
-                players[i].addChips(chips: game.pot)
-            }
         }
+        
         pushPlayers()
         
         

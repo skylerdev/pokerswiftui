@@ -111,9 +111,12 @@ struct PlayerView: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(player.acting ? .green : .clear, lineWidth: 4)
+                    
                 //            .animation(.easeInOut.repeatForever(), value: player.acting))
             )
             .padding(.trailing, -20)
+            .shadow(color: player.won ? .yellow : .clear, radius: 6)
+            
             
             
         }
@@ -125,7 +128,7 @@ struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
         
         PlayerView(player:
-                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 1236, bigBlind: true, acting: true, hasActed: false, folded: false)
+                    Player(id: "huhahsdfj", name: "Dunco El Guapo", chips: 2849, totalRoundBet: 284, currentBet: 1236, bigBlind: true, acting: true, hasActed: false, folded: false, won: true)
         
         
             )
