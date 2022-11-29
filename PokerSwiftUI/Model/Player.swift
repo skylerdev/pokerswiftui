@@ -36,6 +36,7 @@ struct Player: Codable, Identifiable {
         hasActed = false
         folded = false
         won = false
+        showing = false
     }
     
     mutating func nextPhase() {

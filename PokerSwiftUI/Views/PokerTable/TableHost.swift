@@ -43,6 +43,13 @@ struct TableHost: View {
                                     }
                                     .padding(.leading, 30)
                                 }
+                                if(tableModel.endgame){
+                                    ShowButton {
+                                        print("Pressed show")
+                                        tableModel.showMyCards()
+                                    }
+                                    .padding()
+                                }
                                 
                             }
                             

@@ -35,6 +35,7 @@
 		5DB5D06B280CF29C00F7F0F7 /* TableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */; };
 		5DB5D06F280D190F00F7F0F7 /* HostButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB5D06E280D190F00F7F0F7 /* HostButton.swift */; };
 		5DB5D075280E1C8D00F7F0F7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DB5D074280E1C8D00F7F0F7 /* GoogleService-Info.plist */; };
+		5DC0447D2935ADA800BB6FD9 /* ShowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC0447C2935ADA800BB6FD9 /* ShowButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		5DB5D06A280CF29C00F7F0F7 /* TableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableModel.swift; sourceTree = "<group>"; };
 		5DB5D06E280D190F00F7F0F7 /* HostButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostButton.swift; sourceTree = "<group>"; };
 		5DB5D074280E1C8D00F7F0F7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5DC0447C2935ADA800BB6FD9 /* ShowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				5D082CFA280A2AF10050814A /* BetControls.swift */,
 				5D082CFD280A31890050814A /* FoldButton.swift */,
 				5D5DD711281367530003C9A4 /* StartButton.swift */,
+				5DC0447C2935ADA800BB6FD9 /* ShowButton.swift */,
 			);
 			path = PokerTable;
 			sourceTree = "<group>";
@@ -274,6 +277,7 @@
 				5D082CE72809F24C0050814A /* Deck.swift in Sources */,
 				5D455C4E2802D1FF0070D8EF /* ContentView.swift in Sources */,
 				5DA5C8B62903500F00AD7A0C /* RotatingCardView.swift in Sources */,
+				5DC0447D2935ADA800BB6FD9 /* ShowButton.swift in Sources */,
 				5DA9C61D292ABB02009E054A /* AlphanumericInput.swift in Sources */,
 				497E3C0F291DCF0600C9D0B9 /* MiniCardView.swift in Sources */,
 				5D082CDF28090B9B0050814A /* YourCardsView.swift in Sources */,
